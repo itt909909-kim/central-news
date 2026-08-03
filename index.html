@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>센트럴시티 뉴스</title>
+<meta name="theme-color" content="#121C26">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="센트럴시티 뉴스">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Crect width='180' height='180' rx='40' fill='%23121C26'/%3E%3Crect x='74' y='40' width='32' height='104' rx='4' fill='%232EBD58'/%3E%3Crect x='84' y='30' width='12' height='120' fill='%2378D696'/%3E%3C/svg%3E">
+<link rel="manifest" href="data:application/json,%7B%22name%22%3A%22%EC%84%BC%ED%8A%B8%EB%9F%B4%EC%8B%9C%ED%8B%B0%20%EB%89%B4%EC%8A%A4%22%2C%22short_name%22%3A%22%EC%84%BC%ED%8A%B8%EB%9F%B4%EB%89%B4%EC%8A%A4%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23121C26%22%2C%22theme_color%22%3A%22%23121C26%22%7D">
+<style>
+  :root{
+    --green:#2EBD58; --green2:#78D696; --charcoal:#121C26; --charcoal2:#1E2E3E;
+    --ink:#F5F8FD; --sub:#CBD6E6; --line:#2c3e50;
+    --red:#ff6b6b; --amber:#ffd166;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Malgun Gothic","Apple SD Gothic Neo",sans-serif;
+    background:var(--charcoal);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
+  header{background:linear-gradient(135deg,var(--charcoal2),var(--charcoal));padding:22px 20px 16px;border-bottom:2px solid var(--green);position:sticky;top:0;z-index:20;box-shadow:0 4px 18px rgba(0,0,0,.35)}
+  .wrap{max-width:1180px;margin:0 auto}
+  h1{font-size:20px;font-weight:800;letter-spacing:-.3px}
+  h1 .g{color:var(--green)}
+  .subttl{color:var(--sub);font-size:12.5px;margin-top:3px}
+  .controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:14px}
+  .search{flex:1;min-width:180px;background:var(--charcoal);border:1px solid var(--line);color:var(--ink);
+    padding:9px 13px;border-radius:9px;font-size:14px}
+  .search::placeholder{color:#6f8199}
+  .tabs{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+  .tab{background:var(--charcoal);border:1px solid var(--line);color:var(--sub);padding:7px 13px;border-radius:20px;
+    font-size:12.5px;cursor:pointer;transition:.15s;white-space:nowrap;font-weight:600}
+  .tab:hover{border-color:var(--green2)}
+  .tab.active{background:var(--green);color:#06210f;border-color:var(--green);font-weight:800}
+  .tab .n{opacity:.7;font-weight:600;margin-left:3px}
+  main{max-width:1180px;margin:18px auto;padding:0 20px 60px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:13px}
+  .card{background:var(--charcoal2);border:1px solid var(--line);border-radius:13px;padding:15px 16px;cursor:pointer;
+    transition:.15s;position:relative;overflow:hidden;display:flex;flex-direction:column;min-height:150px}
+  .card:hover{transform:translateY(-2px);border-color:var(--green);box-shadow:0 8px 22px rgba(0,0,0,.4)}
+  .card .badges{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:9px;align-items:center}
+  .b{font-size:10.5px;font-weight:700;padding:3px 8px;border-radius:6px;letter-spacing:.2px}
+  .b-cat{background:rgba(46,189,88,.16);color:var(--green2);border:1px solid rgba(46,189,88,.35)}
+  .b-scan{background:rgba(255,209,102,.14);color:var(--amber);border:1px solid rgba(255,209,102,.35)}
+  .b-new{background:var(--green);color:#06210f;border:1px solid var(--green);animation:blink 1.4s ease-in-out infinite}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:.55}}
+  .card.isnew{border-color:var(--green);box-shadow:0 0 0 1px rgba(46,189,88,.4)}
+  .updated{font-size:11.5px;color:var(--green2);margin-top:4px;font-weight:600}
+  .tl-wrap{background:var(--charcoal2);border:1px solid var(--line);border-radius:14px;padding:15px 17px;margin-bottom:16px}
+  .tl-head{display:flex;justify-content:space-between;align-items:center;cursor:pointer;gap:10px}
+  .tl-head h2{font-size:15px;font-weight:800;color:var(--ink)}
+  .tl-head .tgl{font-size:12px;color:var(--green2);font-weight:700;white-space:nowrap}
+  .tl-sub{font-size:11.5px;color:#7d8ea3;margin-top:3px}
+  .tl-list{margin-top:13px}
+  .tl-item{display:flex;gap:9px;align-items:baseline;padding:6px 8px 6px 13px;font-size:12.7px;line-height:1.5;border-left:2px solid var(--line);position:relative;cursor:pointer;border-radius:0 8px 8px 0;transition:.12s}
+  .tl-item:hover{background:rgba(46,189,88,.09);border-left-color:var(--green)}
+  .tl-go{color:#5f7189;font-weight:800;font-size:15px;flex-shrink:0;align-self:center}
+  .tl-item:hover .tl-go{color:var(--green)}
+  .tl-item::before{content:'';position:absolute;left:-5px;top:9px;width:8px;height:8px;border-radius:50%;background:var(--sub);border:2px solid var(--charcoal2)}
+  .tl-item.good::before{background:var(--green)}
+  .tl-item.risk::before{background:#ff6b6b}
+  .tl-item.neutral::before{background:#ffd166}
+  .tl-date{color:var(--green2);font-weight:800;min-width:62px;flex-shrink:0;font-size:12px}
+  .tl-txt{color:var(--sub);flex:1}
+  .tl-tag{font-size:9.5px;font-weight:800;padding:1px 6px;border-radius:5px;margin-left:5px;white-space:nowrap}
+  .tag-us{background:rgba(46,189,88,.18);color:var(--green2)}
+  .tag-r4{background:rgba(255,107,107,.14);color:#ff9a9a}
+  .tag-do{background:rgba(120,214,150,.12);color:#8fd6a8}
+  .tag-mk{background:rgba(203,214,230,.1);color:#9fb0c4}
+  .tl-legend{font-size:11px;color:#7d8ea3;margin-top:12px;padding-top:10px;border-top:1px solid var(--line)}
+  .tl-legend b{font-weight:700}
+  .rel-wrap{background:var(--charcoal2);border:1px solid var(--line);border-radius:14px;padding:15px 17px;margin-bottom:16px}
+  .rel-head{display:flex;justify-content:space-between;align-items:center;cursor:pointer;gap:10px}
+  .rel-head h2{font-size:15px;font-weight:800;color:var(--ink)}
+  .rel-head .tgl{font-size:12px;color:var(--green2);font-weight:700;white-space:nowrap}
+  .rel-sub{font-size:11.5px;color:#7d8ea3;margin-top:3px}
+  .rel-svg{margin:14px 0 6px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .rel-list{margin-top:10px}
+  .rel-row{border-left:3px solid var(--line);padding:7px 0 7px 11px;margin-bottom:8px;font-size:12.7px;line-height:1.55}
+  .rel-row.good{border-left-color:var(--green)}
+  .rel-row.risk{border-left-color:#ff6b6b}
+  .rel-row.warn{border-left-color:#ffd166}
+  .rel-row.neutral{border-left-color:#8aa}
+  .rel-e{font-weight:800;color:var(--ink);margin-right:6px}
+  .rel-d{color:var(--sub)}
+  .rel-camp{margin-top:12px;padding:11px 13px;background:rgba(46,189,88,.06);border:1px solid rgba(46,189,88,.2);border-radius:10px;font-size:12.4px;color:var(--sub);line-height:1.6}
+  .rel-camp b{color:var(--green2)}
+  .b-star{color:var(--amber);font-size:11px;letter-spacing:1px}
+  .card h3{font-size:14.5px;font-weight:700;line-height:1.4;margin-bottom:8px;flex:1}
+  .card .meta{font-size:11.5px;color:#7d8ea3;margin-bottom:7px}
+  .card .sum{font-size:12.5px;color:var(--sub);border-top:1px dashed var(--line);padding-top:8px;margin-top:auto}
+  .imp{font-size:12px}
+  .pdfhint{font-size:11px;color:var(--amber);margin-top:8px;font-weight:600}
+  /* modal */
+  .overlay{position:fixed;inset:0;background:rgba(4,10,16,.82);backdrop-filter:blur(4px);z-index:50;
+    display:none;align-items:flex-start;justify-content:center;padding:30px 16px;overflow-y:auto}
+  .overlay.on{display:flex}
+  .modal{background:var(--charcoal2);max-width:760px;width:100%;border-radius:16px;border:1px solid var(--green);
+    box-shadow:0 20px 60px rgba(0,0,0,.6);animation:pop .18s ease}
+  @keyframes pop{from{transform:scale(.97);opacity:.4}to{transform:scale(1);opacity:1}}
+  .mhead{padding:20px 22px 14px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--charcoal2);border-radius:16px 16px 0 0}
+  .mhead .badges{margin-bottom:9px}
+  .mhead h2{font-size:18px;font-weight:800;line-height:1.4;padding-right:34px}
+  .mhead .meta{font-size:12px;color:#8aa;margin-top:6px}
+  .close{position:absolute;top:16px;right:18px;background:var(--charcoal);border:1px solid var(--line);color:var(--ink);
+    width:32px;height:32px;border-radius:8px;font-size:18px;cursor:pointer;line-height:1}
+  .close:hover{border-color:var(--red);color:var(--red)}
+  .mbody{padding:18px 22px 24px}
+  .sec-label{font-size:11.5px;font-weight:800;color:var(--green);letter-spacing:.5px;text-transform:uppercase;margin:4px 0 8px}
+  .analysis{background:rgba(46,189,88,.07);border:1px solid rgba(46,189,88,.25);border-radius:11px;padding:13px 15px;margin-bottom:18px}
+  .analysis .row{font-size:13px;margin-bottom:6px}
+  .analysis .row b{color:var(--green2)}
+  .article{font-size:13.5px;color:var(--sub);white-space:pre-wrap;line-height:1.75;
+    border-top:1px solid var(--line);padding-top:14px}
+  .pdfbtn{display:inline-flex;align-items:center;gap:7px;background:var(--green);color:#06210f;font-weight:800;
+    text-decoration:none;padding:11px 18px;border-radius:10px;font-size:14px;margin-top:6px}
+  .pdfbtn:hover{background:var(--green2)}
+  .scanbox{text-align:center;padding:26px 16px}
+  .scanbox p{color:var(--sub);font-size:13.5px;margin-bottom:16px}
+  .warn{background:rgba(255,107,107,.1);border:1px solid rgba(255,107,107,.3);color:#ffb3b3;font-size:12px;
+    padding:9px 12px;border-radius:9px;margin-top:12px}
+  .empty{text-align:center;color:#7d8ea3;padding:50px 0;font-size:14px}
+  footer{max-width:1180px;margin:0 auto;padding:0 20px 40px;color:#5f7189;font-size:11.5px;text-align:center}
+  @media(max-width:600px){.grid{grid-template-columns:1fr}h1{font-size:17px}}
+</style>
+</head>
+<body>
+<div id="gate" style="position:fixed;inset:0;z-index:999;background:linear-gradient(135deg,#1E2E3E,#121C26);display:flex;align-items:center;justify-content:center;flex-direction:column;padding:24px">
+  <div style="text-align:center;max-width:320px;width:100%">
+    <div style="font-size:22px;font-weight:800;color:#F5F8FD;margin-bottom:6px"><span style="color:#2EBD58">센트럴시티</span> 뉴스</div>
+    <div style="font-size:12.5px;color:#CBD6E6;margin-bottom:22px">내부 열람용 · 접근코드를 입력하세요</div>
+    <input id="pw" type="password" inputmode="numeric" placeholder="접근코드" autocomplete="off"
+      style="width:100%;padding:13px 15px;border-radius:11px;border:1px solid #2c3e50;background:#121C26;color:#F5F8FD;font-size:16px;text-align:center;letter-spacing:2px"
+      onkeydown="if(event.key==='Enter')tryPw()">
+    <button onclick="tryPw()" style="width:100%;margin-top:12px;padding:13px;border-radius:11px;border:none;background:#2EBD58;color:#06210f;font-weight:800;font-size:15px;cursor:pointer">열기</button>
+    <div id="pwerr" style="color:#ff6b6b;font-size:12.5px;margin-top:12px;min-height:16px"></div>
+  </div>
+</div>
+<header>
+  <div class="wrap">
+    <h1><span class="g">센트럴시티</span> 뉴스 아카이브 <span style="font-size:12px;color:var(--sub);font-weight:600">· 용인역삼지역주택조합(R1-3)</span></h1>
+    <div class="subttl">News 폴더 기사 전수 분석 · 주제군별 분류 · 카드 클릭 시 전문·분석 팝업 · 스캔본은 PDF 열기</div>
+    <div class="updated" id="updated">🟢 매일 07:00 자동 업데이트 · 새 기사는 맨 앞에 NEW 배지로 표시</div>
+    <div class="controls">
+      <input class="search" id="q" placeholder="🔍 제목·출처·내용 검색…" oninput="render()">
+    </div>
+    <div class="tabs" id="tabs"></div>
+  </div>
+</header>
+<main>
+  <section class="tl-wrap" id="tlwrap">
+    <div class="tl-head" onclick="toggleTL()">
+      <div>
+        <h2>📌 한눈에 보는 히스토리 (Executive Summary)</h2>
+        <div class="tl-sub">역삼지구 20년 흐름을 <b style="color:var(--green2)">최신순</b>으로 · 색=우리 사업 관점 · <b style="color:var(--green2)">각 줄 클릭 시 해당 기사 열림</b></div>
+      </div>
+      <span class="tgl" id="tltgl">접기 ▲</span>
+    </div>
+    <div class="tl-list" id="tllist"></div>
+    <div class="tl-legend"><b style="color:var(--green2)">●</b> 호재　<b style="color:#ff9a9a">●</b> 리스크　<b style="color:#ffd166">●</b> 중립　｜　태그: <span class="tl-tag tag-us">우리</span> R1-3 · <span class="tl-tag tag-r4">R1-4</span> 센텀·힐스 · <span class="tl-tag tag-do">도개조</span> 상위 · <span class="tl-tag tag-mk">시장</span></div>
+  </section>
+  <section class="rel-wrap" id="relwrap">
+    <div class="rel-head" onclick="toggleRel()">
+      <div>
+        <h2>🔗 이해관계도 — 우리 조합 중심</h2>
+        <div class="rel-sub">센트럴시티(R1-3)와 도개조·다우·서희·서해의 관계 · 초록=우호/호재, 빨강=대립/리스크</div>
+      </div>
+      <span class="tgl" id="reltgl">접기 ▲</span>
+    </div>
+    <div id="relbody">
+    <div class="rel-svg">
+      <svg viewBox="0 0 760 560" width="100%" style="max-width:760px;display:block;margin:0 auto;min-width:520px" font-family="sans-serif">
+        <!-- 컨텍스트 엣지(점선) -->
+        <line x1="380" y1="60" x2="650" y2="140" stroke="#ff6b6b" stroke-width="1.4" stroke-dasharray="5 4" opacity=".65"/>
+        <line x1="380" y1="60" x2="150" y2="480" stroke="#2EBD58" stroke-width="1.4" stroke-dasharray="5 4" opacity=".55"/>
+        <line x1="600" y1="480" x2="680" y2="310" stroke="#8aa0b5" stroke-width="1.4" stroke-dasharray="5 4" opacity=".5"/>
+        <!-- 중심 스포크(실선) : 우리(380,280) -->
+        <line x1="380" y1="280" x2="380" y2="60" stroke="#ffd166" stroke-width="2.4"/>
+        <line x1="380" y1="280" x2="650" y2="140" stroke="#ff6b6b" stroke-width="2.4"/>
+        <line x1="380" y1="280" x2="680" y2="310" stroke="#8aa0b5" stroke-width="2.4"/>
+        <line x1="380" y1="280" x2="600" y2="480" stroke="#ff6b6b" stroke-width="2.4"/>
+        <line x1="380" y1="280" x2="150" y2="480" stroke="#2EBD58" stroke-width="2.4"/>
+        <line x1="380" y1="280" x2="95" y2="175" stroke="#2EBD58" stroke-width="2.4"/>
+        <!-- 엣지 라벨 -->
+        <g font-size="11" fill="#cbd6e6" text-anchor="middle">
+          <rect x="316" y="160" width="128" height="17" rx="4" fill="#121C26"/><text x="380" y="172">체비지 매입·토지 토대</text>
+          <rect x="470" y="188" width="150" height="17" rx="4" fill="#121C26"/><text x="545" y="200">매각 대행(과거)·권원⚠</text>
+          <rect x="484" y="292" width="96" height="17" rx="4" fill="#121C26"/><text x="532" y="304">별개·혼동방지</text>
+          <rect x="428" y="376" width="132" height="17" rx="4" fill="#121C26"/><text x="494" y="388">前시공 해지→우리 승</text>
+          <rect x="198" y="376" width="118" height="17" rx="4" fill="#121C26"/><text x="257" y="388">인프라 호재(간접)</text>
+          <rect x="176" y="214" width="104" height="17" rx="4" fill="#121C26"/><text x="228" y="226">현 시공(우호)</text>
+        </g>
+        <g font-size="10" fill="#9fb0c4" text-anchor="middle">
+          <rect x="478" y="86" width="92" height="16" rx="4" fill="#121C26"/><text x="524" y="98">시행권 분쟁</text>
+          <rect x="206" y="250" width="96" height="16" rx="4" fill="#121C26"/><text x="254" y="262">기반시설 도급</text>
+          <rect x="608" y="382" width="80" height="16" rx="4" fill="#121C26"/><text x="648" y="394">센텀 시공</text>
+        </g>
+        <!-- 노드 -->
+        <g text-anchor="middle" font-weight="800">
+          <!-- 우리 (중심) -->
+          <rect x="300" y="256" width="160" height="52" rx="11" fill="#14331f" stroke="#2EBD58" stroke-width="2.5"/>
+          <text x="380" y="278" font-size="14" fill="#F5F8FD">센트럴시티 (우리)</text>
+          <text x="380" y="296" font-size="11" fill="#78D696">R1-3 · 용인역삼지역주택조합</text>
+          <!-- 도개조 -->
+          <rect x="288" y="36" width="184" height="46" rx="10" fill="#1E2E3E" stroke="#ffd166" stroke-width="1.8"/>
+          <text x="380" y="58" font-size="12.5" fill="#F5F8FD">용인역삼구역 도시개발조합</text>
+          <text x="380" y="74" font-size="10.5" fill="#9fb0c4">조합장 이영환 · 직무대행 문병상</text>
+          <!-- 다우 -->
+          <rect x="566" y="118" width="168" height="46" rx="10" fill="#1E2E3E" stroke="#ff6b6b" stroke-width="1.8"/>
+          <text x="650" y="140" font-size="12.5" fill="#F5F8FD">(주)다우아이콘스</text>
+          <text x="650" y="156" font-size="10.5" fill="#9fb0c4">시행사 · 법원 시행권 인정</text>
+          <!-- R1-4 -->
+          <rect x="596" y="288" width="164" height="46" rx="10" fill="#1E2E3E" stroke="#8aa0b5" stroke-width="1.8"/>
+          <text x="678" y="310" font-size="12.5" fill="#F5F8FD">R1-4 센텀·힐스</text>
+          <text x="678" y="326" font-size="10.5" fill="#9fb0c4">별개 블록 · 서희/현대ENG</text>
+          <!-- 서희 -->
+          <rect x="516" y="458" width="168" height="46" rx="10" fill="#1E2E3E" stroke="#ff6b6b" stroke-width="1.8"/>
+          <text x="600" y="480" font-size="12.5" fill="#F5F8FD">서희건설</text>
+          <text x="600" y="496" font-size="10.5" fill="#9fb0c4">R1-4 시공 · 다우 라인</text>
+          <!-- 서해 -->
+          <rect x="60" y="458" width="180" height="46" rx="10" fill="#1E2E3E" stroke="#2EBD58" stroke-width="1.8"/>
+          <text x="150" y="480" font-size="12.5" fill="#F5F8FD">서해종합건설</text>
+          <text x="150" y="496" font-size="10.5" fill="#9fb0c4">기반시설 시공 · 다우 NPL 매입</text>
+          <!-- 한라 -->
+          <rect x="18" y="153" width="154" height="44" rx="10" fill="#14331f" stroke="#2EBD58" stroke-width="1.8"/>
+          <text x="95" y="173" font-size="12.5" fill="#F5F8FD">㈜한라</text>
+          <text x="95" y="189" font-size="10.5" fill="#78D696">현 시공사(우리 편)</text>
+        </g>
+      </svg>
+    </div>
+    <div class="rel-list">
+      <div class="rel-row warn"><span class="rel-e">용인역삼구역 도시개발조합</span><span class="rel-d">우리에게 <b>R1-3(1번 체비지)을 매도</b>한 토지·환지 주체. 도개조의 정상화(집행부·기반시설)가 우리 토지·인프라의 전제 → 종속·핵심 관계.</span></div>
+      <div class="rel-row good"><span class="rel-e">㈜한라</span><span class="rel-d">우리 <b>현 시공사</b>. 서희 해지 후 조합원 90% 지지로 선정, 2,109억 수주 → 우호(우리 편).</span></div>
+      <div class="rel-row risk"><span class="rel-e">서희건설</span><span class="rel-d">우리 <b>前 시공예정사 → 공사비 400억 증액 요구로 해지</b>, 서희 위약금 소송 <b>패소</b>(우리 승). 現 R1-4 센텀 시공·내외경제TV 인수 → <b>대립</b>.</span></div>
+      <div class="rel-row risk"><span class="rel-e">(주)다우아이콘스</span><span class="rel-d">우리 <b>R1-3 체비지 매각을 대행</b>한 시행사(특혜 의혹 보도). 現 도개조와 시행권 분쟁·부채. 다우 분쟁이 우리 <b>체비지 권원·잔금에 미칠 영향 ⚠확인 필요</b>.</span></div>
+      <div class="rel-row good"><span class="rel-e">서해종합건설</span><span class="rel-d">도개조 <b>기반시설 시공사</b>(2025.9 착공)·다우 NPL 450억 매입. 우리 사업지 도로·인프라 진척 → <b>간접 호재</b>.</span></div>
+      <div class="rel-row neutral"><span class="rel-e">R1-4 (센텀·힐스)</span><span class="rel-d">같은 지구 <b>별개 블록</b>. 이름 혼동 주의(용인시청<b>역</b> 지주택 vs 우리 용인시청 <b>앞</b> 센트럴시티). 서희·다우 라인.</span></div>
+    </div>
+    <div class="rel-camp"><b>상위 구도(우리와 별개):</b> [도개조 집행부(이영환)+서해종합건설] 이 [다우아이콘스(법원 시행권 인정)] 를 결별·정리하려는 힘겨루기. 서희는 R1-4·다우 라인. <b>우리(R1-3)</b>는 첫 체비지·㈜한라 시공·사업계획승인 완료로 상위 분쟁과 <b>분리·선행</b> — 상위 정상화(기반시설 착공)는 호재, 시행권 분쟁 재점화는 리스크(모니터링).</div>
+    <div class="rel-camp" style="background:rgba(255,209,102,.06);border-color:rgba(255,209,102,.25);margin-top:9px"><b style="color:#ffd166">서희·다우가 묶인 이유(추론):</b> 밀려나는 <b>다우</b>(시행권 방어)+일감 급한 <b>서희</b>(수주 절실)+토지대금 급한 <b>센텀</b>(자금)의 '위기 생존 연대'. '적의 적은 친구'로 [조합 집행부+서해]에 대항하는 구도. "총회서 서희 선정 시 자금 지원" 공지 등 <b>자금 지원 대가 유착 성격</b> → R1-4의 강점이 아니라 <b>불안정성을 방증</b>. (사실 위 추론 · 미확정 · 상세는 아래 '[추론] 서희·다우는 왜 손잡았나' 카드)</div>
+    </div>
+  </section>
+  <div class="grid" id="grid"></div>
+  <div class="empty" id="empty" style="display:none">검색 결과가 없습니다.</div>
+</main>
+<footer>© 센트럴시티 내부 분석용 아카이브 · 외부 배포·경쟁 비방 금지 · '조합원 충원' 표현·회차/세대수 비표기 원칙 · 대표님 확인(⚠) 항목은 사실관계 확인 후 활용</footer>
+
+<div class="overlay" id="overlay" onclick="if(event.target===this)closeM()">
+  <div class="modal" id="modal"></div>
+</div>
+
+<script>
+// ===== 접근코드 (원하는 값으로 변경 가능. 숫자·문자 모두 가능) =====
+const ACCESS_CODE = "9020";
+function tryPw(){
+  const v=document.getElementById('pw').value.trim();
+  if(v===ACCESS_CODE){
+    try{sessionStorage.setItem('cc_ok','1')}catch(e){}
+    document.getElementById('gate').style.display='none';
+  }else{
+    document.getElementById('pwerr').textContent='접근코드가 올바르지 않습니다.';
+    document.getElementById('pw').value='';
+  }
+}
+try{ if(sessionStorage.getItem('cc_ok')==='1') document.getElementById('gate').style.display='none'; }catch(e){}
+// ===== Executive Summary 타임라인 (시간순 한 줄) =====
+const TIMELINE=[
+ {d:"2003",t:"역삼구역 도시개발구역 지정(용인시청 앞 약 21만평·69만㎡)",tone:"neutral",tag:"do",ref:"10년 만에 첫발"},
+ {d:"2011.8",t:"역삼 도시개발 실시계획 인가",tone:"neutral",tag:"do",ref:"10년 만에 첫발"},
+ {d:"2015.11",t:"체비지 지주택 인기…역삼 'G-state' 2,167가구 조합원 모집",tone:"neutral",tag:"us",ref:"인기몰이"},
+ {d:"2016.12",t:"도개조, 체비지 매매계약(R1-3=800억 / R1-4=2,190억)",tone:"neutral",tag:"do",ref:"10년 만에 첫발"},
+ {d:"2017.5",t:"서희건설 'R1-3 서희스타힐스 센트럴시티' 분양(환지방식·토지100%계약)",tone:"good",tag:"us",ref:"서희스타힐스"},
+ {d:"2017.5",t:"'봉이 김선달' 경고보도 — R1-4 센텀(2,981세대) 토지 미확보 지적",tone:"risk",tag:"r4",ref:"봉이 김선달"},
+ {d:"2017.8",t:"역삼 환지계획 인가 / 센텀스카이(R1-4) 조합원 모집 개시",tone:"neutral",tag:"do",ref:"센텀스카이' 조합원 모집"},
+ {d:"2017.10",t:"도개조, R1-4((주)역삼주택) 계약해지·제3자 매각공고 → R1-4 소송",tone:"risk",tag:"r4",ref:"지역주택조합 피해 우려"},
+ {d:"2018.9",t:"첫 체비지(R1-3, 800억) 발판…역삼 도시개발 재추진 기대",tone:"good",tag:"us",ref:"10년 만에 첫발"},
+ {d:"2019.11",t:"R1-3 조합, 서희 해지→㈜한라를 90% 지지로 시공사 선정",tone:"good",tag:"us",ref:"넘는 조합원 압도적"},
+ {d:"2019.11",t:"(반대측) 한라 선정 총회 정족수 무효 주장·비대위 소송",tone:"risk",tag:"us",ref:"법원 간다"},
+ {d:"2019.12",t:"㈜한라 2,109억 시공권 수주 확정",tone:"good",tag:"us",ref:"시공권 수주"},
+ {d:"2020.3",t:"동아일보 \"한라 8월 착공 예정\"(R1-3)",tone:"good",tag:"us",ref:"일반분양·착공 잇따라"},
+ {d:"2020.5",t:"(R1-3) 체비지 매각 특혜·잔금 미지급·200억 대출 의혹 보도 ⚠",tone:"risk",tag:"us",ref:"17년간 표류"},
+ {d:"2020.5",t:"도개조 PM 경쟁(세정파트너스·현대 / G&B대구수성·호반)",tone:"neutral",tag:"do",ref:"임시총회 개최 (PM"},
+ {d:"2021.4",t:"서희 위약금 소송 패소 → 한라 교체 확정",tone:"good",tag:"us",ref:"공사비 400억"},
+ {d:"2023.10",t:"도개조 이영환 조합장 최초 선출('지분 쪼개기' 논란)",tone:"risk",tag:"do",ref:"[현황·라이브] 역삼도시개발조합 집행부"},
+ {d:"2024.5",t:"법원, 이영환 등 직무정지 → 문병상 직무대행 체제",tone:"neutral",tag:"do",ref:"[현황·라이브] 역삼도시개발조합 집행부"},
+ {d:"2024.10",t:"힐스테이트 용인역삼(R1-4, 현대건설) 조합원 모집·토지 97.57% 주장",tone:"neutral",tag:"r4",ref:"힐스테이트 용인 역삼(R1-4"},
+ {d:"2025.2",t:"도개조 새 집행부 임시총회 공고(세금·부담금 체납 1,200억)",tone:"risk",tag:"do",ref:"'20년 방치'"},
+ {d:"2025.4",t:"이영환 재선출 / 반도체 배후 견본주택 성황",tone:"neutral",tag:"do",ref:"[현황·라이브] 역삼도시개발조합 집행부"},
+ {d:"2025.5",t:"삼가2지구 힐스 용인포레 임시 진입도로 개통(88억)",tone:"neutral",tag:"mk",ref:"삼가2지구"},
+ {d:"2025.6~9",t:"서해종합건설 기반시설 도급→벌목·착공(8년 표류 끝 정상화 착공)",tone:"good",tag:"do",ref:"[현황·라이브] 역삼도시개발조합 집행부"},
+ {d:"2025.9~12",t:"R1-4 센텀 '600억 증발·분담금 폭탄·서희 유착' 의혹 연속 보도",tone:"risk",tag:"r4",ref:"재개발, 600억 증발"},
+ {d:"2025.10",t:"'3BL 703명 600억 손실' 사기극 보도(우리 지목 가능성 ⚠)",tone:"risk",tag:"us",ref:"사기극"},
+ {d:"2025.10",t:"김윤덕 국토부 장관 '지역주택조합 폐지' 발언",tone:"risk",tag:"mk",ref:"사기극"},
+ {d:"2025.12",t:"R1-4 센텀, 서희 시공 선정·도개조에 300억 납부",tone:"neutral",tag:"r4",ref:"총 300억원 납부"},
+ {d:"2026.1",t:"(경쟁사 기사서 확인) 우리 R1-3 '사업계획승인' 획득 — 인허가 우위",tone:"good",tag:"us",ref:"사업계획승인 획득"},
+ {d:"2026.2",t:"용인시 '지역주택조합 피해사례집' 발간(지주택 부정 여론)",tone:"risk",tag:"mk",ref:"누군가는 '오르고'"},
+ {d:"2026.5",t:"역삼지구 20년 표류…환지 취소 소송·공공개발론(선거 이슈)",tone:"risk",tag:"do",ref:"20년째 표류"},
+ {d:"2026.7",t:"3·4블럭 체비지 매각 의혹·도개조 조합장 배임 고소 ⚠",tone:"risk",tag:"do",ref:"2700명, 체비지 매각"},
+ {d:"2025.12",t:"삼가2지구 힐스 용인포레 입주 개시(공공 대체도로 238억으로 해결)",tone:"good",tag:"mk",ref:"삼가2지구"},
+ {d:"2026.8",t:"(R1-3) 대로 3-33 원인자부담 위수탁계약 — 도개조 분리 독립 인프라·9월 착공 예정",tone:"good",tag:"us",ref:"대로 3-33"},
+ // <<<INSERT-NEW-TIMELINE-HERE>>> (매일 자동수집: 주요 새 사건을 이 줄 위에 시간순으로 추가. 형식: {d:"YYYY.MM",t:"한 줄 요약",tone:"good|risk|neutral",tag:"us|r4|do|mk",ref:"연결할 기사 제목 일부(D의 t와 부분일치)"} 뒤에 콤마)
+];
+const TAGN={us:"우리",r4:"R1-4",do:"도개조",mk:"시장"};
+function tlKey(d){
+  if(!d)return 0;
+  const s=String(d).split('~')[0].trim();
+  const p=s.split('.');
+  const y=parseInt(p[0],10)||0;
+  const m=parseInt(p[1],10)||0;
+  return y*100+m;
+}
+function renderTL(){
+  const items=TIMELINE.map((x,i)=>({x,i})).sort((a,b)=>{const k=tlKey(b.x.d)-tlKey(a.x.d); return k!==0?k:b.i-a.i;});
+  document.getElementById('tllist').innerHTML=items.map(({x,i})=>
+    `<div class="tl-item ${x.tone}" onclick="tlOpen(${i})"><span class="tl-date">${x.d}</span><span class="tl-txt">${x.t}<span class="tl-tag tag-${x.tag}">${TAGN[x.tag]}</span></span><span class="tl-go">›</span></div>`).join('');
+}
+function tlOpen(i){
+  const ref=TIMELINE[i].ref; if(!ref)return;
+  const idx=D.findIndex(d=>d.t.indexOf(ref)>=0);
+  if(idx>=0){openM(idx);}else{alert('연결된 기사를 찾지 못했습니다.');}
+}
+let TLOPEN=true;
+function toggleTL(){TLOPEN=!TLOPEN;document.getElementById('tllist').style.display=TLOPEN?'':'none';
+  document.querySelector('.tl-legend').style.display=TLOPEN?'':'none';
+  document.getElementById('tltgl').textContent=TLOPEN?'접기 ▲':'펼치기 ▼';}
+let RELOPEN=true;
+function toggleRel(){RELOPEN=!RELOPEN;document.getElementById('relbody').style.display=RELOPEN?'':'none';
+  document.getElementById('reltgl').textContent=RELOPEN?'접기 ▲':'펼치기 ▼';}
+const CATS = {
+  c1:{name:"① 본사업(한라·R1-3)"},
+  c2:{name:"② 역삼도시개발·R1-4"},
+  c3:{name:"③ 경쟁·인근단지"},
+  c5:{name:"⑤ 용인시·시장"},
+  scan:{name:"📄 판독불가(PDF)"}
+};
+const D=[
+// <<<INSERT-NEW-ARTICLES-HERE>>>  (매일 자동수집: 이 줄 바로 아래에 새 기사 객체를 prepend. 형식: {t,s,c,imp,st,r:1,nw:1,ad:"YYYY-MM-DD",pid:"" 또는 url,an:"분석",b:`전문`})
+{t:"⭐ 센트럴시티 세일즈 포인트 — 왜 R1-3인가",s:"내부 소구 정리 · 2026-08-01",c:"c1",imp:"🟢",st:3,r:1,url:"https://centralcity-yongin.com",
+an:"용인시청 앞 정중앙·에버라인 용인시청역 / 반도체 배후(삼성·SK) / 처인구 비규제 / 도시개발 환지방식 첫 체비지 / ㈜한라 시공 / 조합설립인가·사업계획승인 완료 — 6대 세일즈 포인트. 상담 1599-0215.",
+b:`왜 '용인시청 앞 센트럴시티(R1-3)'인가 — 6대 강점\n\n① 입지 — 용인시청 앞 정중앙\n· 에버라인 용인시청역(시청·용인대역) 인근. 용인시청·행정타운, 롯데시네마·이마트·용인중앙도서관, 세브란스병원, 다수 학교 등 생활·의료·교육 인프라 밀집.\n\n② 반도체 배후 미래가치\n· 삼성 용인 첨단시스템반도체 국가산업단지(360조) + SK하이닉스 반도체 클러스터의 배후 주거권. 대규모 고용·인구 유입 기대.\n\n③ 처인구 = 비규제지역\n· 10.15 대책에서 용인은 수지구만 규제, 처인구는 비규제. 대출·전매·실거주·자금조달 부담이 규제지역 대비 가벼움.\n\n④ 도시개발 환지방식 · 첫 번째 체비지(선도 사업)\n· 순수 지역주택조합의 토지 미확보 리스크와 구조적으로 다른 '도시개발조합 환지방식' 기반 → 토지 확보 안정성.\n\n⑤ ㈜한라(HL디앤아이한라) 시공\n· 대형 브랜드 시공사 확정. 과도한 공사비 증액을 거부하고 한라로 선정한 건전한 의사결정.\n\n⑥ 사업 진척 — 조합설립인가 + 사업계획승인 완료\n· 인허가 실행 단계까지 진입한 선도 사업. 인근 대비 앞선 진도로 실현 확실성↑.\n\n＋ 전용 85㎡ 이하 중소형 위주 실수요 구성.\n\n■ 상담·방문\n· 센트럴시티 홍보관: 용인특례시 처인구 중부대로 1188번길 5\n· 대표 상담: 1599-0215 · 공식 홈페이지: centralcity-yongin.com\n\n※ 문안 규칙: '조합원 충원' 표현 사용, 회차·세대수 외부 비표기, 경쟁 비방 금지. 인허가·수치는 최신 확정치 확인 후 표기.`},
+{t:"💬 상담 FAQ — 혼동 방지 표준 답변",s:"상담 스크립트 요약 · 2026-08-01",c:"c1",imp:"🟢",st:2,r:1,url:"https://centralcity-yongin.com",
+an:"센텀·힐스·600억 뉴스와 혼동될 때 쓰는 표준 답변. 핵심: 저희는 '용인시청 앞 센트럴시티(R1-3·㈜한라)', 언론 사안은 대개 R1-4 등 다른 블록·다른 조합. 경쟁 비방 없이 사실 구분만.",
+b:`■ 혼동 방지 표준 답변\n\nQ. "역삼 지주택 문제 많다던데, 여기 그거예요?"\nA. 역삼지구는 블록별로 다른 사업입니다. 저희는 R1-3 센트럴시티(용인역삼지역주택조합·㈜한라·환지방식 첫 체비지)이고, 언론에 나오는 사안은 대개 다른 블록·다른 조합입니다.\n\nQ. "용인시청'역' 지역주택조합(센텀스카이)이랑 같은 데 아니에요?"\nA. 다릅니다. 저희는 '용인시청 앞 센트럴시티'(R1-3), 센텀은 R1-4 블록의 별개 사업(블록·조합·시공사 모두 다름). 저희 시공사는 ㈜한라입니다.\n\nQ. "600억 증발·피해 뉴스 봤어요."\nA. 그 보도는 저희 R1-3가 아니라 다른 블록·다른 조합 사안입니다. 저희는 체비지 기반·㈜한라 시공·인허가 진척으로 성격이 다릅니다.\n\nQ. "역삼 힐스테이트랑 헷갈려요."\nA. '힐스테이트 용인 역삼'도 R1-4 블록의 별개 사업(현대건설)입니다. 저희는 R1-3 센트럴시티(㈜한라).\n\nQ. "시공사 서희 아니었어요?"\nA. 현재 시공사는 ㈜한라(HL디앤아이한라)입니다.\n\nQ. "지역주택조합은 위험하다던데?"\nA. 일반 지주택은 토지를 하나씩 사 모아야 해 지연 위험이 큽니다. 저희는 도시개발 환지방식·체비지(공적으로 정리된 토지) 기반이라 구조가 안정적이고, 한라 시공·인허가 진척까지 갖췄습니다.\n\nQ. "비규제라 뭐가 좋아요?"\nA. 처인구는 조정대상지역·투기과열지구가 아니라, 대출·전매·실거주·자금조달 부담이 규제지역 대비 가볍습니다.\n\nQ. "분담금·입주 시기?"\nA. 현재 기준 조건·일정은 홍보관 상담에서 정확히 안내드립니다.\n\n■ 클로징\n"정확한 건 직접 보시는 게 빠릅니다. 홍보관 방문 예약 도와드릴게요." → 1599-0215 · 홍보관 용인특례시 처인구 중부대로 1188번길 5\n\n※ 상담사 주의: 경쟁 조합 직접 비방 금지(사실 구분만), 회차·세대수 비표기, 미확정·수사 중 사안 언급 자제, '조합원 충원' 표현, '서희스타힐스' 미사용.`},
+{t:"[현황·라이브] 역삼도시개발조합 집행부 — 조합장 이영환",s:"검색 종합 · 최종확인 2026-08-01",c:"c2",imp:"🟢",st:3,r:1,nw:1,ad:"2026-08-01",url:"https://www.gukjenews.com/news/articleView.html?idxno=3387826",
+an:"상위 도개조 집행부 현황(라이브). 현 조합장=이영환(문병상 직무대행 체제). 기반시설 착공=우리 R1-3 간접 호재 / 선출 소송·배임 고소=불안정 리스크. 새 뉴스 나오면 갱신됨.",
+b:`■ 현 조합장: 이영환 (S건설사 전 임원) · 직무대행: 문병상(수원지법 선임) 체제에서 신규 집행부 구성\n\n[시간순]\n· 2023.10.19 이영환 조합장 최초 선출 ('지분 쪼개기' 정족수 논란 총회)\n· 2024.5.3 수원지법 제31민사부, 총회 결의 무효 → 이영환 등 8명 직무집행 정지 → 문병상 직무대행 체제\n· 2025.4.19 총회에서 이영환 재선출 (반대 조합원 총회금지 가처분은 법원 기각: "신속한 집행부 구성·사업 정상화 필요")\n· 2025.6 서해종합건설과 기반시설 도급계약 → 8월 감리 승인 → 9월 벌목·기반시설 착공 (8년 표류 끝 정상화 착공 국면)\n· 2026.7 체비지 매각 의혹 관련 현 조합장 배임 혐의 고소(동탄서) — 수사 초기, 혐의 미확정\n· 반대 조합원: "임원 해임 후 2년 재선출 불가" 정관 위반 주장 → 효력정지 가처분 예고\n\n[관련 인물·업체] 시행사 (주)다우아이콘스(전 대표 강대영 뇌물 구속·옥중사망 / 현 대표 김호중, 부채·손배 분쟁), 기반시설 시공 서해종합건설\n\n[우리 사업(R1-3) 영향] 기반시설 착공은 우리 인프라·정상화 간접 호재. 반면 조합장 선출 소송·배임 고소·다우 분쟁은 상위 도개조 불안정 리스크로 우리 사업 진척과 연동. 이영환='S건설 전 임원' → 스캔본 'S건설 지분쪼개기' 건과 연결.\n\n※ 이 카드는 라이브 현황판입니다. 매일 자동수집이 새 뉴스를 찾으면 갱신됩니다. (최종확인 2026-08-01)`},
+{t:"[정밀분석] 센텀스카이(R1-4) — 조합원 모집 스토리·토지매입 결론",s:"검색·기사 종합 · 2026-08-01",c:"c2",imp:"🔴",st:3,r:1,pid:"1gXo_VTdDHlNjCJpvUz31P0TSYQNAwUvC",
+an:"센텀 모집: 저가(평당 850만) 미끼 → 계약해지 위기에도 '100% 토지확보' 문구로 계속 모집 → 정원(1,780) 초과 모집(약 2,900) → 분담금 5억 폭탄 → 2,452세대 하향. 토지: 체비지 2,192억 중 약 300억(14%)만 납부, 사실상 미확보·조합설립인가 前. 우리 R1-3(사업계획승인 완료)와 근본 격차.",
+b:`■ 조합원 모집 스토리 (시간순)\n· 2016.12 (주)역삼주택(업무대행) 명의로 도개조와 체비지 매매계약(2,192억). 최고 46층·2,981세대 계획.\n· 2017 초 "평당 850만원 이하 공급" 저가 약속으로 대규모 모집 시작. 홍보관 수지구 동천동.\n· 2017.8 환지계획 인가 → "환지방식=기존 지주택과 차별화"를 세일즈 포인트로 모집 가속.\n· 2017.10~11 도개조가 '모집률 50% 미달'로 계약해지 통보(당시 755명). 센텀은 반발·가처분.\n· 2018.4 계약해지 통보 후에도 '100% 토지확보' 현수막·홍보관으로 모집 지속(피해 500여 명).\n· ~2025 조합원 2,300명까지 증가, 9년간 약 520~600억 모금. 2025.9 '먹튀' 논란 — 정원(1,780세대) 이하로 모집해야 하나 약 2,900세대 초과 모집 의혹.\n· 2025.9~10 분담금 폭탄: 평당 850만 → 예상 2,200만, 84㎡ 추가 분담금 5억+, 최초 2.9억 → 8억+. "기존 조합원 10%만 입주 가능" 전망.\n· 2025.12 조합원 3·4차 계약금 조기 납부(+서희 자금 지원)로 급전 마련.\n· 2026.1 약 1,900여 세대 모집(2,981 목표 중), 개발계획 변경으로 2,452세대 하향 조정 예정, 10월 조합설립인가 신청 계획(설립인가 前).\n\n요약: "저가 미끼 → 해지 위기에도 계속 모집 → 정원 초과 → 분담금 5억 폭탄 → 세대수 하향(2,452)하며 겨우 지속"\n\n■ 토지매입 — 결론\n· 구조: 도개조 소유 체비지(약 19,063평·2,192억)를 매입하는 방식(개별 사유지 매입 아님).\n· 실태: 9년간 토지대금을 거의 못 내 '토지확보 제로'(계약금 미지급) → 도개조가 2017·2025 반복 계약해지 통보.\n· 2025.4 토지계약 소송 대법원 승소(계약 유효 근거) → 그러나 도개조가 부지 미확보로 재차 해지통보 + 12/10까지 100억 요구.\n· 2025.12 계약금+중도금 1차 총 300억만 납부(서희 지원)로 계약해제 위기 일단 해소. 단 전체 2,192억의 약 14%만 납부.\n· 2026.7 3·4블럭 체비지 매각 의혹(감정평가·총회·입찰 없이 내부거래, 대행사 지급능력 부재) 경기남부청 고발·조합장 배임 고소.\n\n결론: 체비지 대금 대부분 미납 → 반복 해지 위기 → 2025년 300억 부분 납부로 연명. 완전한 토지 소유권 확보까지 갈 길이 멀고, 아직 조합설립인가 前.\n\n[우리 R1-3 대비] 센텀(R1-4): 체비지 대금 약 14% 납부·설립인가 前·분담금 5억. 센트럴시티(R1-3, 우리): 첫 체비지·㈜한라 시공·사업계획승인 완료. → 토지·인허가 실행 단계의 근본 격차.\n\n※ 언론 보도 기반·일부 수사 진행 중(미확정). 외부 홍보는 경쟁 비방 없이 우리 팩트(체비지·한라·사업계획승인) 중심으로만 활용.`},
+{t:"[정밀분석] 역삼 힐스테이트(R1-4) — 토지매입·매도청구·인허가",s:"검색·기사 종합 · 2026-08-01",c:"c2",imp:"🔴",st:3,r:1,pid:"1XrEFDcHCuy0YyaM1XiGMD8GvZC6ikYwZ",
+an:"힐스(현대건설, 540세대+오피 272실, 비체비지)는 '토지매입 97.57%·신탁등기 완료' 홍보하나, 비체비지=집단환지 개별확보 구조라 소유권 확보 미확인(잔여 알박기·신탁 성격 검증 필요). ★체비지(도개조 단일매입)와 달리 집단환지 토지는 개별 토지주 각각으로부터 확보해야 함. 조합설립인가·사업계획승인 前 → 매도청구도 현재 불가. 우리 R1-3(체비지 단일매입·한라·사업계획승인 완료)와 최소 2단계 격차.",
+b:`■ 기본\n· R1-4블록 내 센텀과 필지 분할된 별개 사업(역북동 산100-3 일원). 시공 현대건설. 아파트 540세대+오피스텔 272실(전용 84㎡ 단일). 2024.10 조합원 모집·신고필증, 2026.8 착공 목표·2030 입주. 평당 약 1,500만/5억 초반, 계약금 정액제·발코니 무상·중도금 60% 무이자.\n\n■ 토지매입 분석\n· 힐스 주장: "토지매입 97.57% + 신탁등기 완료" → "지연 리스크 없다" 홍보(2024.10).\n· 그러나 대표님 확인대로 힐스는 비(非)체비지 → 도개조發 체비지가 아니라 직접 매입(순수 지주택형). 따라서:\n  - "97.57%"는 자체 매입 주장 → 등기부 독립 검증 필요, 소유권 확보 미확인.\n  - 잔여 약 2.43% 알박기·미매입 리스크.\n  - "신탁등기"가 완전한 소유권 이전인지, 담보/관리신탁 수준인지 구분 필요.\n  - 지번 '산'100-3(임야) → 지목·형질변경 변수.\n\n■ 집단환지·토지확보 구조 (핵심)\n· 도개조는 환지방식이라 '토지확보' 자체는 구역 지정·환지계획 인가(2017)로 이미 완료 → 문제는 확보가 아니라 사업화·정산 단계.\n· 지구 내 땅은 소유주체가 갈림: ①체비지=도개조 단일 소유 → 사업자가 도개조와 매매 1건으로 통째 확보(우리 R1-3·센텀 방식, 개별 협상 불요) ②집단환지(비체비지)=여러 토지주 공유 → 소유권이 개별 토지주에게 있어, 사업자가 그 블록 토지주 각각으로부터 직접 매입해야 함.\n· 힐스는 ②비체비지 → '97.57% 매입률'이라는 진행률 개념이 나오는 것 자체가 개별 확보 구조의 방증(체비지면 계약 1건으로 끝). 잔여 미매입=알박기 리스크로 직결.\n· ⇒ '환지방식이라 안전'이 아니라, 체비지(단일매입)냐 집단환지(개별확보)냐가 실제 안전도를 가른다. 우리 R1-3=체비지 단일매입으로 개별확보 리스크 없음.\n\n■ 인허가 단계\n· 아직 조합설립인가·사업계획승인 신청이 남은 상태(아주경제 2025.4). 설립인가·모집신고엔 토지매매계약률 90% 이상 요건(2025.10 국토부).\n\n■ 매도청구 가능여부\n· 매도청구는 '사업계획승인'을 받은 사업주체만 행사 가능(주택법 제22조) → 힐스는 승인 前이라 현재 불가.\n· 향후 승인 후 소유권 95%↑(2026 개편 80%↑) 확보 시 매도청구 가능(95%↑면 미확보 전원 / 미만이면 지구단위계획 고시 10년 이전 취득·계속보유자 제외). 3개월 협의 선행.\n\n■ 규제 배경\n· 용인시 2026.5 지주택 실태점검 14곳 중 9곳 고발·시정명령(허위·과장 모집광고 등). '토지확보 과장' 홍보 리스크 환경.\n\n■ 결론 & 우리 R1-3 대비\n· 힐스 토지매입 = "자체 97.57% 주장 vs 비체비지 소유권 미확인"의 간극. 체비지처럼 공적으로 담보된 토지가 아니라 직접 매입 구조 → 잔여 미매입·소유권 이전·형질 리스크 상존, 아직 설립인가 前, 매도청구도 불가.\n· 센트럴시티(R1-3, 우리): 첫 체비지(공적)+㈜한라+사업계획승인 완료. → 토지 성격·인허가 단계 모두 최소 2단계 앞섬.\n· ⚠검증: 힐스 R1-4 필지 등기부(소유권자·신탁유형·잔여 미매입) 조회로 '97.57%' 진위 확정.\n· ※ 언론·홍보 기반, 일부 수사 중(미확정). 외부는 비방 없이 우리 팩트 중심.`},
+{t:"[추론] 서희·다우는 왜 손잡았나 — R1-4 '생존 연대'",s:"관계 추론 · 2026-08-01",c:"c2",imp:"⚪",st:2,r:1,url:"https://www.pinpointnews.co.kr/news/articleView.html?idxno=398761",
+an:"밀려나는 다우(시행권 방어) + 일감 급한 서희(수주 절실) + 토지대금 급한 센텀(자금)이 각자 생존을 위해 R1-4에서 뭉친 '위기 연대'로 추론. '적의 적은 친구'(조합+서해에 대항). 우리 R1-3(한라·정상)와 정반대 구도이며, R1-4의 불안정성을 방증.",
+b:`■ 배경 구도\n· 상위 도개조가 두 편으로 갈림 — [조합 집행부(이영환)+서해종합건설] 이 [다우아이콘스] 를 밀어냄(서해가 다우 NPL 450억 매입해 압박). 법원은 다우 시행권 인정, 조합은 결별 강행. 이 국면에서 서희·다우가 R1-4(센텀)에서 결합.\n\n■ 다우가 서희를 끌어들인 이유(추론)\n· 밀려나는 처지 → 우군·자금 절실. R1-4가 실제로 굴러가야 시행권·투입금(약 1,700억)을 회수.\n· 센텀이 도개조에 토지대금(300억)을 내고 위기를 넘겨야 사업 존속 → 자금·시공 파트너 필요 = 서희.\n\n■ 서희가 센텀/다우 편에 선 이유(추론)\n· 일감 절실 — 우리 R1-3 시공권 상실, 상폐 위기(2024) 후 2025 매출 −23%·영업이익 −38%. 대형 수주(센텀 2,400~2,900세대)가 필요.\n· 지주택 특화 건설사 → 시행권 쥔 다우와 손잡는 게 R1-4 진입 지름길(다우-서희 토목 공동계약·국제신탁 100억 예치).\n\n■ 핵심 = '생존 연대'\n· 적의 적은 친구: 조합+서해가 다우를 칠 때, 다우는 우군이·서희는 진입로가 필요 → 이해 일치.\n· R1-4 존속이 양쪽 생명줄: 다우(시행권·회수)·서희(시공 매출). 사업이 굴러가야 둘 다 산다.\n· 구조: [서희=자금·시공] + [다우=시행권] + [센텀 추진위=조합] 연합 vs [조합 집행부+서해] 대치.\n\n■ 성격\n· "총회서 서희 선정 시 자금 지원" 공지 = 정상 선정이 아닌 유착 성격(법조계 배임·불공정 지적). 위기의 사업·건설사·시행사의 상호 붙잡기.\n\n■ 우리 R1-3 관점\n· 서희-다우 연대 = R1-4를 살리려는 안간힘이지 강점 아님(R1-4 불안정·자금난 방증).\n· 우리가 서희를 내치고 한라로 간 판단이 옳았음을 방증.\n· 단, 이 연대가 상위 도개조 분쟁을 격화시키면 지구 정상화(우리 인프라 포함)에 변수 → 모니터링.\n\n한 줄: 밀려나는 다우 + 일감 급한 서희 + 토지대금 급한 센텀이 각자 생존을 위해 R1-4에서 뭉침. 우리(R1-3·한라·사업계획승인)와 정반대 '위기 연대'.\n※ 이 카드는 사실 위에 얹은 추론(해석)이며, 당사자 실제 의도는 미확정. 외부는 비방 없이 우리 팩트 중심.`},
+{t:"[정밀분석] 도개조 ↔ 다우아이콘스 분쟁 — 배척 이유·손배소",s:"검색·기사 종합 · 2026-08-01",c:"c2",imp:"🔴",st:3,r:1,url:"https://www.pinpointnews.co.kr/news/articleView.html?idxno=398761",
+an:"조합이 다우를 '비리·자금 불투명·20년 표류 책임'을 '신뢰 파탄' 명분으로 배척+서해와 정상화 강행. 다우는 법원 시행권 인정을 지렛대로 약 2,600억 손배(+미납세금 700억)를 채권 카드로 압박. 우리 R1-3는 직접 당사자 아님(별개), 파급 모니터링.",
+b:`■ 조합이 다우를 배척한 이유\n[공식 명분]\n· 비리·부패: 다우 전 대표 강대영 하수종말처리장 발주 13억 뇌물 구속·옥중 사망, 전 도개조 조합장 3.7억 수수 의혹·4블럭 지분 13% 확보.\n· 자금 불투명: 약 570억 사용처 불투명, 페이퍼컴퍼니 3사(글로벌씨엔디·와이제이엔·부호) 180억 지급 의혹.\n· 20년 표류 책임: 진척 없이 표류·세금 등 1,200억대 체납·매몰비용 누적.\n· '신뢰 관계 파탄' 명분으로 결별 강행.\n[구조적 실질]\n· 다우(및 대행사) 명의 계약이 족쇄 → 조합 주도권 상실. 다우를 빼야 새 자금·시공 구조로 전환 가능.\n· 새 집행부(이영환·문병상)가 서해종합건설과 기반시설 착공. 서해(자회사 태성자산운용)가 다우 NPL 450억 매입해 채권 지렛대 무력화.\n[이면 추론·미확정]\n· 20년 이익·시행권을 쥔 다우를 밀어내고 새 집행부+서해가 주도권·이권을 재편하려는 동기도 겹침.\n\n■ 다우 손배소 상세\n· 규모: 삼가2지구 힐스테이트 + 4블록(R1-4) 관련 손해배상 청구 약 2,600억(다우 통고문 산정치) + 미납세금 약 700억 별도(매년 140억 추가 주장).\n· ※세금 700억 = 다우 법인세 아님·우리 R1-3 조합 세금 아님. '사업지'(체비지·기반시설 부지)에 부과된 국세·지방세·광역교통부담금 등으로 상위 도개조 부담(다우가 압박 근거로 인용).\n· 근거: 다우=2004년부터 약 1,700억 투입한 시행사(시행권 보유). 조합의 부당 결별·시공사 교체를 시행권 침해로 보고 기투입비·이자·일실이익을 손배로 청구·예고.\n· 법적 기반: 2025.11 법원이 다우의 사업 지위(시행권) 인정 → 손배 근거 강화. 다우 "2021·2023·2025 판결로 계약해지 불가" 주장, 2021 가처분으로 새 시공사 선정 금지 전례.\n· 대치: 조합은 판결을 무시하고 개발계획 변경 강행. 서해의 NPL 매입 = 다우 채권을 '돈으로' 정리·무력화하려는 수순.\n\n■ 우리 R1-3 관점\n· 다우 손배 대상은 '삼가2·R1-4'로 명시 → 우리 R1-3(첫 체비지·㈜한라·사업계획승인)는 직접 당사자 아님(별개).\n· 단, 분쟁이 뒤집히거나(다우 시행권 재확정) 장기화되면 지구 정상화·우리 인프라 일정에 파급 가능 → 모니터링. 다우가 과거 우리 R1-3 체비지 매각을 대행한 이력 → 권원 영향은 ⚠법률 확인.\n\n한 줄: 조합은 다우의 비리·자금·표류 책임을 '신뢰 파탄'으로 배척+서해와 정상화 강행 / 다우는 법원 시행권 인정을 지렛대로 2,600억 손배 압박. 우리 R1-3는 별개, 파급만 모니터링.\n※ 2,600억·700억은 다우 측 통고문상 산정치·주장. 정식 소 제기·인용액·사건번호는 미확인(수사·소송 진행 중). 외부는 비방 없이 우리 팩트 중심.`},
+{t:"[정밀분석] 다우 2,600억 손배 타당성 · NPL 압박 · 존속 가능성",s:"손배액 타당성 평가 · 2026-08-01",c:"c2",imp:"🔴",st:3,r:1,url:"https://www.pinpointnews.co.kr/news/articleView.html?idxno=398761",
+an:"2,600억은 '청구' 단계의 다우 측 최대 산정치(통고문)이지 법원 인용액 아님 → 인과관계·일실이익 보수산정·과실상계로 크게 감액될 수 있으나, 시행권 인정·투입금으로 0은 아닐 것. NPL로 다우를 도산·정산까지 압박 가능 → 다우 단독 지속 어려움, 사업은 조합+서해가 이어감.",
+b:`■ 2,600억 손배 청구 — 근거 타당성 평가\n· 성격: '청구' 단계의 다우 측 산정치(통고문)이지 법원 인용액이 아님. 손배소는 통상 원고가 최대치로 청구하고, 법원은 인과관계·일실이익 보수 산정·과실상계로 대폭 감액하는 경우가 많음.\n· 구성 추정: 기투입비 약 1,700억(2004~) + 일실이익(기대 시행이익) + 이자 ≈ 2,600억. 즉 일실이익·이자 약 900억을 얹은 역산 구조로 추정.\n· 하한 근거(0은 아닐 가능성): 법원이 다우 시행권 인정(2025.11) + 실제 투입금 존재 → 손배 청구권의 '기초'는 있음.\n· 감액 요인: ① 미회수 투입금 전액이 '손해'로 인정되려면 조합의 위법 결별과 인과관계 입증 필요 ② 일실이익은 사업 불확실성으로 보수적으로 산정돼 크게 깎일 수 있음 ③ 20년 표류엔 다우 귀책(비리·자금 불투명)도 있어 과실상계 여지 ④ 삼가2+R1-4 합산이라 사업별 분리 다툼.\n· 평가: '2,600억'은 협상·압박용 최대 산정치로 보는 것이 타당. 실제 인용 가능액은 상당히 낮아질 수 있으나, 시행권 인정·투입금으로 0은 아닐 것 → 확정액은 소송 결과로만 판단.\n· ※ 정식 소 제기 여부·사건번호·인용액 미확인. 다우 측 주장.\n\n■ 세금 700억 — 납부주체·세목(참고)\n· 납부주체: 다우 법인세 아님 / 우리 R1-3 조합 세금 아님. → '사업지(역삼 도시개발사업)'에 부과된 세금으로, 토지·환지 주체인 상위 도시개발조합(도개조) 부담. 다우는 시행사로서 '표류 시 눈덩이'라는 압박 근거로 인용.\n· 세목: 체비지·기반시설 부지에 대한 국세·지방세·광역교통부담금 등(재산세·종부세 등 보유세 + 개발부담금·광역교통부담금 계열). 다우 통고문상 '매년 140억 추가'.\n· 700억(다우 통고문·2025.5) vs 1,200억(도개조 체납·경인일보 2025.2)은 같은 성격(체비지·기반시설 세금)이나 인용주체·시점·집계범위가 다른 수치.\n· ⚠ 우리 R1-3: 직접 납세의무 아님. 단 다우가 우리 체비지 매각 대행 이력 → 체비지 권원·잔금·세금승계 영향 여부 법률 확인.\n\n■ NPL 채권으로 가능한 압박\n· 서해(자회사 태성자산운용) 다우 NPL 450억 매입·196억 회수(실행 중). 수단: ① 지급독촉·기한이익상실(연체이자) ② 담보권 실행(임의경매·공매) ③ 가압류·강제집행·처분금지 ④ 상계·우선회수 ⑤ 회생·파산 신청(도산 압박) ⑥ 지분 담보 시 경영권 압박 ⑦ '시행권 포기·이탈' 조건 정산 협상(가장 현실적 지렛대).\n\n■ 다우 경영·존속\n· 취약(추정): 투입금 미회수 + 미납세금 700억 + NPL 부실 + 소송 다수 → 유동성 심각. 단 비상장 사모 시행사라 재무 공시 없어 수치는 정황 추정.\n· 남은 힘 = 법적 시행권. 자금은 말랐어도 협상력은 보유.\n· 지속 여부: 다우 단독 완주는 사실상 불가(추론). 유력 시나리오 = NPL·손배 상계 정산으로 이탈·정리. 사업 자체는 조합+서해가 기반시설 착공으로 이어감(사업 지속 ≠ 다우 존속).\n\n■ 우리 R1-3 시사점\n· 별개 당사자. 단 다우 정리 속도가 지구 정상화·우리 인프라 일정에 영향 → 모니터링. 다우가 과거 우리 체비지 매각 대행 이력 → 권원 영향 ⚠법률 확인.\n\n한 줄: 2,600억은 '압박용 최대 청구치'로 실제 인용액은 크게 낮아질 수 있음(단 0은 아님). NPL로 다우를 도산·정산까지 조일 수 있어 다우 단독 지속은 어렵고, 사업은 조합+서해가 이어감. ※상당 부분 법률 일반론·추론·미확정.`},
+// ===== ① 본사업 =====
+{t:"[핵심] R1-3 진입도로(대로 3-33) 원인자부담 독립 시행 — 도개조 분리·9월 착공 예정",s:"대표님 제공 · 2026-08",c:"c1",imp:"🟢",st:3,r:1,nw:1,ad:"2026-08-01",
+an:"우리 R1-3, 간선도로 '대로 3-33' 공사를 '원인자부담방식'으로 시행하는 위·수탁계약을 용인시와 체결 → 진입도로(기반시설)를 상위 도개조와 분리해 독립 시행 가능. 토지보상금+도로공사비 지급 시 9월 착공 예정. 삼가2지구가 공공개입으로 도로를 뚫어 입주까지 간 것과 같은 '도로 독립 해결' 구조를 착공 前 선제 확보 → 맹지·도개조 종속 리스크 정면 해소.",
+b:`■ 핵심 사실 (대표님 제공)\n· 우리 블록(R1-3)은 진입 간선도로 '대로 3-33' 공사를 원인자부담방식으로 시행하기로 하는 위·수탁계약을 용인시와 체결.\n· 조건: 토지보상금 + 도로공사비를 지급하면 → 2026년 9월 착공 예정.\n· 효과: 지구 기반시설(진입도로)을 상위 도시개발조합(도개조) 정상화에 의존하지 않고 분리해 독립 시행 가능.\n\n■ 왜 결정적인가\n· 그동안 R1-4·삼가2의 최대 약점 = '도개조 미정상화 시 도로 부재(맹지)'. 남의 사업 일정에 진입로가 걸려 있으면 다 지어도 못 들어감(삼가2 6년 유령아파트가 실증).\n· 우리는 대로 3-33을 원인자부담+위수탁으로 직접 푼다 → 도개조 분쟁·체납과 무관하게 진입도로 확보 경로를 자력으로 마련.\n\n■ 삼가2지구와의 구조 유사성\n· 삼가2 힐스: 역삼지구 도로에 의존→표류→공공(용인도시공사)이 대체도로(238억) 직접 건설→2025.12.31 입주 개시로 해결.\n· 우리 R1-3: 도개조 도로에 의존하지 않고 원인자부담 위수탁으로 직접 시행→9월 착공. '도로를 사업 주체와 분리해 자력 해결'이라는 같은 해법을 선제 적용.\n· 결정적 차이: 삼가2는 준공 후 6년 방치되고서야 공공이 뒤늦게 해결 / 우리는 착공 前에 도로 경로를 선제 확보 → 리스크 관리 우위.\n\n■ 우리 소구 포인트\n· \"R1-3는 진입도로(대로 3-33)를 원인자부담·위수탁으로 독립 시행, 도개조 분쟁과 분리해 착공 예정\" = 맹지·종속 우려 정면 해소, 실행력 입증.\n· ※ 착공·보상 일정은 토지보상금·도로공사비 지급 등 조건 이행에 연동 → 확정 표기는 진행 확인 후. 외부는 회차·수치 비표기·경쟁 비방 금지, 우리 팩트 중심.`},
+
+{t:"한라, 2109억 용인 역삼 지역주택조합아파트 시공권 수주",s:"글로벌이코노믹 · 2020-01-01",c:"c1",imp:"🟢",st:3,r:1,pid:"1XBnpxXMfxhNmCMBSVkuWId94s9csGSeg",
+an:"㈜한라 2,109억 수주 공식 확인(2019.12.31). 28블럭1롯트=R1-3, 연면적 18만㎡·85㎡이하 중소형. 시공사 교체(서희→한라) 서사의 완결 팩트.",
+b:`한라가 경기도 용인에서 2109억 원(부가가치세 포함) 규모의 지역주택조합아파트 신축공사를 수주했다.\n\n지난해 12월 31일 한라가 따낸 지역주택조합 아파트는 용인 처인구 역북동 용인역삼 도시개발사업구역 28블럭 1롯트에 조성하는 공사이다. 연면적 18만 1409㎡(약 5만 4900평)에 공동주택 1042가구, 오피스텔 138실과 부대복리시설를 신축한다.\n\n공동주택은 전 가구 전용면적 85㎡ 이하 중소형으로 구성되며, 1042가구 중 조합원 875가구, 일반분양 167가구 공급된다.\n\n올해 8월 착공과 함께 분양에 들어가며, 오는 2023년 11월 입주 예정이다.`},
+
+{t:"'용인역삼지역주택조합' 시공사 ㈜한라 선정, 대다수(90%) 넘는 조합원 압도적 지지",s:"더쎈뉴스 · 2019-12-07",c:"c1",imp:"🟢",st:2,r:1,pid:"11UW80ZwDf1Bvrq_n-ANa8LKDQ9Vq53cK",
+an:"조합원 약 90% 지지로 한라 선정(합리적 공사비·우수한 금융조건·기업 이미지). 조합 의사결정 정당성·시공 신뢰 근거.",
+b:`'용인역삼지역주택조합'은 지난 11월 29일 3회 총회에서 조합원들은 거의 대다수(90%) 지지로 ㈜한라를 시공사로 선정함으로써 뜨거운 열기와 성원을 보여줬다.\n\n조합은 이제 새로운 시공사 ㈜한라를 선정함으로써 새로운 각오로 빠른 시일 내에 공동으로 착공을 준비하고 사업에 더욱 박차를 가함으로써 사업을 성공적으로 진행시킬 예정이다.\n\n㈜한라가 제시한 공사비가 합리적이고, 금융 등 부대조건 또한 매우 좋았던 이유와 함께, ㈜한라가 그동안 보여준 좋은 기업 이미지도 상당히 영향을 준 것으로 보인다.`},
+
+{t:"[건설-이슈] 용인 역삼지역주택조합, 새 시공사 '한라'는 '무효' 법원 간다…비대위 \"의결정족수 부족\"",s:"내외경제TV · 2019-12-06",c:"c1",imp:"🔴",st:3,r:1,pid:"1xo8RUjSJVlBuJU0zg96jAZOOB2k_dCvD",
+an:"⚠본사업 내부갈등. 한라 선정 총회(11/29) 정족수 미달 무효 주장·비대위 소송, 예상 분담금 8천만 소문(698명). ※출처 내외경제TV는 서희 계열 매체(편향 가능성). 소송 결과·선정 유효성 대표님 확인 필요.",
+b:`경기도 용인시 용인역삼지역주택조합(조합장 최인식, 대행사 정학기)의 조합원들이 시공사 선정을 비롯 방만하고 투명하지 못한 조합 운영으로 갈팡질팡하고 있어 각자의 예상 분담금이 8000만원에 달할 것이라는 소문이 떠돌고 있다.\n\n지난달 29일 조합과 대행사는 시공사를 서희건설에서 한라로 선정했다며 사업에 속도를 낸다고 보도했다. 하지만 일부 조합원은 이날 총회에 대해 '정족수 미달'이라며 회의록·참석자 명부 공개를 요구하는 내용증명을 보내는 등 법적 투쟁도 불사한다.\n\n현행 조합 규정상 전체 조합원 698명 중 위임장·서면결의 제외 현장에 20%(140명) 이상 참석해야 하나, 조합은 161명 참석을 주장한 반면 제보 조합원은 80여 명에 불과했다고 주장했다.\n\n조합 측은 \"2019년 3월 29일 총회에서 서희건설 시공사 선정을 부결했고, 9월 27일 서희와의 사업약정서를 해지·추인했으며, 이번 총회에서 90% 이상 압도적 지지로 한라를 선정했다\"고 설명했다.`},
+
+{t:"용인역삼지역주택조합, 조합장 최인식·업무대행사 정학기 대표…앞뒤 다른 행보에 조합원들 피눈물",s:"내외경제TV · 2019-11-29",c:"c1",imp:"🔴",st:3,r:1,pid:"1HFRa-xyLJckFge7uYrpUTKAT98pCTMoT",
+an:"⚠본사업(R1-3) 운영 리스크. 100억대 소송 설명 부족, 브릿지론 600억(200+400), 대행 수수료 60%·약 75억 수령(표준 대비 50억↑) 의혹. ※내외경제TV=서희 계열. 현 조합장·대행사 체제 유지/교체 대표님 확인.",
+b:`용인역삼지역주택조합(조합장 최인식)과 업무대행사(대표 정학기)의 투명하지 못한 조합 운영에 대해 조합원들이 피눈물을 흘리고 있다며 문자·SNS로 공유하는 등 내부 갈등으로 진통을 겪고 있다.\n\n조합원들의 가장 큰 불만은 100억원대 소송 진행사항에 대한 설명 부족이다. 또한 지난 28일 기존 200억원 브릿지론에 더해 400억원 브릿지론을 추가로 받는다는 사실이 알려지며 논란이 가중되고 있다.\n\n한 조합원은 \"업무대행 계약서에 추진위원장을 대행사 직원으로 만들어 대행료 60%까지 지급 가능하게 돼 있으며, 이미 55% 이상 약 75억을 지급받은 것으로 보인다. 표준계약서 대비 약 50억 이상 더 받아간 것\"이라며 불신을 드러냈다.`},
+
+{t:"[부동산업계 일일동향] 한라, 약 2109억원 규모 용인역삼 지역주택조합아파트 신축공사 수주 외",s:"NSP통신·뉴스웨이 · 2019-12-30",c:"c1",imp:"🟢",st:1,r:1,pid:"1FdpwyYix5b0TCeQEDrGy5zNYR9JZSPee",
+an:"한라 2,109억 수주 추가 보도. 지상 43층(B4~43F, 5개동), 조합원 875/1042≈84%(안정성), 반경3km 학교13곳, SK하이닉스 반도체 클러스터 약 16km.",
+b:`한라가 약 2109억 원(VAT포함) 규모의 '용인역삼 지역주택조합아파트 신축공사' 계약을 체결했다고 공시했다.\n\n이번 사업은 경기도 용인시 처인구 역북동 용인역삼 도시개발사업구역 28블럭 1롯트에 위치하며 연면적 18만1409.54㎡(5만4876.39평), 공동주택 1042가구(5개 동, B4~43F), 오피스텔 138실 및 부대복리시설 등을 신축하는 사업이다.\n\n전 세대 전용 85㎡이하 중소형 평형으로 구성될 예정으로 수요확보에 용이하고 총 1042가구 중 조합원 분량이 875가구, 일반분양분 167가구로 조합원 분량이 약 84%다. 2020년 8월 착공 및 분양, 2023년 11월 입주예정이다.`},
+
+{t:"한라, 2019억원(2109억) 규모 용인 역삼지구 지역주택조합 공사 수주",s:"뉴스웨이 · 2019-12-31",c:"c1",imp:"🟢",st:1,r:1,pid:"1THnusxG7W_MBMo92GDbCnhthoL-0Mg3R",
+an:"한라 2,109억 수주(#18과 동일 사안). 반경3km 학교13곳(초7·중3·고3), 조합원 84%로 사업 안정성, 시청·용인대역 인근, SK하이닉스 약 16km.",
+b:`㈜한라(대표이사 이석민)가 약 2,109억원(VAT포함) 규모의 '용인역삼 지역주택조합아파트 신축공사'를 수주했다.\n\n이 사업은 경기도 용인시 처인구 역북동 용인역삼 도시개발사업구역 28블럭 1롯트에 위치하며, 연면적 181,409.54㎡, 공동주택 1042세대(5개동, B4~43F), 오피스텔 138실 및 부대복리시설 등을 신축한다. 전 세대 전용 85㎡이하 중소형 평형으로 구성될 예정으로 총 1,042세대 중 조합원 분량 875세대, 일반분양분 167세대로 조합원 분량이 약 84%의 높은 수준으로 사업 추진의 안정성이 보장된다. 2020년 8월 착공·분양, 2023년 11월 입주예정.\n\n사업지 반경 3km 내 학교 13곳(초7·중3·고3), 인근에 롯데시네마·이마트·용인중앙도서관·시청·세브란스병원. 용인경전철 시청·용인대역 인근. 용인 테크노밸리, SK하이닉스 용인 반도체 클러스터(약 16km) 배후주거단지 역할 전망.`},
+
+{t:"서희건설, 공사비 400억 더 챙기려다 지역주택 사업권 놓쳤다",s:"인사이트코리아 · 2021-04-28",c:"c1",imp:"🟢",st:3,r:1,pid:"1fApUd_u2_UFif9OMYDDOf8AtQmjUw5cj",
+an:"조합이 서희의 과도 공사비 증액(1887→2290억) 거부→서희 해지·한라 선정. 서희 60억 위약금 소송 패소. '조합이 조합원 이익 지켜 한라로 정상화' 거버넌스 건전성 근거.",
+b:`서희건설이 지역주택조합을 상대로 시공비를 400억원 가량 올려 받으려다 1900억원 상당 사업권을 놓쳤다. 위약금 소송에서도 패소했다.\n\n서희건설이 용인역삼지역주택조합에 제기한 사업약정파기에 따른 60억원 위약금 청구 소송에서 패소했다. 이 사업은 용인역삼 도시개발사업구역 28블록(연면적 18만1409㎡)에 공동주택 5개 동 1042가구, 오피스텔 1개 동 138실 등을 짓는 공사다. 전체 공사비는 2109억원으로 서희건설 약정 1887억보다 222억(10.5%) 늘었다.\n\n서희건설은 물가인상률 반영 등을 이유로 공사비를 1887억에서 2290억(3.3㎡당 365→417만원, 12.5%↑)으로 인상 요구했고, 조합이 수용불가하자 3.3㎡당 387만원(7.2%↑)으로 재조정 시도했으나 무산됐다. 결국 조합은 임시총회에서 서희와의 사업약정 해지를 결정하고 새 시공사를 선정했다.\n\n서희건설은 남양주 진주아파트 재건축에서도 공사비 증액·용역 동원 등으로 반발을 샀으며, 2020년 시공능력 33위·부실시공 합산벌점 1위에 올랐다.`},
+
+{t:"서희건설, '용인역삼 서희스타힐스(센트럴시티)' 분양 — 브랜드 기원 자료",s:"현대경제신문 · 2017-05-16",c:"c1",imp:"🟢",st:3,r:1,pid:"1eNUl6xwkM4RytxqlZ8iTtKZNMEap43hv",
+an:"'센트럴시티' 브랜드 기원(2017 R1-3 서희스타힐스 센트럴시티). 도시개발조합 환지방식·토지 100% 계약·한국자산신탁 관리. 서희→한라 정상화 계보 확정. ※'서희스타힐스' 명칭 현재 사용 금지.",
+b:`서희건설이 경기도 용인에 지역주택조합단지 '용인역삼 서희스타힐스'를 분양한다.\n\n경기도 용인시 처인구 역북동 역삼도시개발사업지구 R1-3블록에 들어서는 서희스타힐스 센트럴시티는 전용면적 65~84㎡의 아파트와 오피스텔 1천149가구로 조성된다.\n\n이 단지는 2021년 개통 예정인 제2경부고속도로와 제2외곽순환도로 등이 가깝고, 역삼지구에는 GTX 연장선 구성역이 설치된다. 구성역을 통하면 삼성역·수서역·강남역까지 30분이면 도착 가능하다.\n\n서희건설 관계자는 \"서희스타힐스 센트럴시티는 일반 지역주택조합과 다르게 도시개발조합 환지방식으로 사업이 시행돼 안정성이 높다\"며 \"일반 지역주택조합은 토지 매입이 지지부진하면 사업이 지연될 수 있지만 이 사업장은 토지가 100% 계약돼 이 같은 우려가 없다. 계약금은 한국자산신탁에서 관리한다\"고 말했다.\n\n모집가는 3.3㎡당 평균 700만원대로 공급된다. 견본주택은 용인시청 바로 앞 처인구 삼가동 241-15번지에 있다.`},
+
+{t:"지역주택조합 아파트 일반분양·착공 잇따라 (한라 시공 용인역삼 언급)",s:"동아일보 · 2020-03-03",c:"c1",imp:"🟢",st:2,r:1,pid:"1ccK1zUkhJR0RWtFOr0NrzB2sM_RhTWHr",
+an:"주택법 개정+대형사 시공으로 지주택 안정성↑. '일반분양=조합원·토지 확보+인가 완료' 긍정 프레이밍. 한라 시공·85㎡이하·시청/용인대역 입지 확증(입지 표기 우리 지침과 정합).",
+b:`지역주택조합 아파트의 일반분양과 착공이 잇따르고 있다. 지역주택조합이 일반분양에 나선다는 것은 기본적인 조합원 및 토지를 확보하고 지자체로부터 인가를 받았다는 의미다.\n\n한라는 8월 경기도 용인시 처인구 역북동 용인역삼 도시개발사업구역 28블럭 1롯트에 위치한 '용인역삼 지역주택조합아파트' 착공에 나설 예정이다. 전 세대 전용 85㎡이하 중소형 평형으로 구성될 예정이며 총 1,042가구 규모다. 용인경전철 시청·용인대역 인근에 위치해 있으며 인근 롯데시네마, 이마트, 용인중앙도서관, 시청, 세브란스병원 등이 있다.\n\n(함께 소개: 천안 청당 서희스타힐스 741가구, 지제영신 4블럭 현대건설 649가구, 오창각리 반도유보라 572가구)`},
+
+{t:"★센트럴시티(R1-3) 조건부 조합설립인가+사업계획승인 획득 확인",s:"조선비즈(센텀 기사 인용) · 2026-01-27",c:"c1",imp:"🟢",st:3,r:1,pid:"1gXo_VTdDHlNjCJpvUz31P0TSYQNAwUvC",
+an:"경쟁사(센텀) 기사에서 '용인 역삼 지역주택조합(센트럴시티)이 조건부 조합설립인가를 거쳐 사업계획승인을 받았다'고 명시. R1-4(설립인가 미완) 대비 인허가 결정적 우위 — 최상위 소구 포인트. ※승인 일자·조건 원문 확인 후 표기.",
+b:`(조선비즈 '용인시청역 지역주택조합(센텀스카이) 절차 진행' 기사 중 발췌)\n\n인근에서는 2016년 비슷한 시기에 추진된 용인 역삼 지역주택조합(센트럴시티)이 조건부 조합 설립 인가를 거쳐 사업계획승인을 받은 바 있다.\n\n※ 본 항목은 경쟁 블록(R1-4 센텀스카이) 기사 안에서 우리 R1-3(센트럴시티)의 인허가 진척을 확인해 주는 대목으로, PDF 링크는 해당 센텀 기사 원문으로 연결됩니다. 정확한 사업계획승인 일자·조건부 내용은 내부 원본으로 확인 후 소구에 반영 권장.`},
+
+// ===== ② 역삼도시개발·R1-4 =====
+{t:"[현장추적] '봉이 김선달' 아파트, 지역주택조합 주의보 (R1-4 센텀 2981세대)",s:"TV조선 · 2017-05-08",c:"c2",imp:"🔴",st:3,r:1,pid:"1Reu55Y-50EVR2LgfYRKNYlsosysz5P0F",
+an:"기사 대상='2981세대/용인시청 앞'=R1-4 센텀스카이. 우리(R1-3)와 별개. 역삼지구 '지연·불확실' 프레임의 근원 → 혼동 방지 + 정상화 서사로 분리.",
+b:`토지확보도 안 됐는데 아파트를 짓겠다며 분양하는 곳이 있습니다. '지역주택조합' 제도를 이용한 것으로, 이미 2천 세대 넘게 분양됐습니다.\n\n"2981세대, 용인시청 앞 마지막 택지지구" — 현재 용인 역삼지구 내에서 분양 중인 한 아파트 광고입니다. 계약금 3000만원 포함 총 2억5천만원가량이면 71㎡ 내 집을 마련할 수 있다고 말합니다. 하지만 이 업체는 땅의 소유권도 확보하지 못했습니다.\n\n전국적으로 2005년부터 2016년 상반기까지 인가받은 지역주택조합 155곳 중 입주가 진행된 곳은 34곳에 불과합니다. 용인 역삼지구 개발사업도 십수 년째 지연되고 있습니다. 2014년 10월 기공식 이후 3년이 지났지만 개발이 진행되지 않았습니다. 70만㎡ 규모 역삼지구 개발이 선행되지 않으면 4000세대 아파트는 지을 수 없습니다.`},
+
+{t:"용인역삼도시개발사업지구 내 '용인행정타운 센텀스카이' 조합원 모집",s:"매일경제 · 2017-08-14",c:"c2",imp:"🟢",st:3,r:1,pid:"1nyx3A-4NVbYQ27oWfUPnXTJgWcDgzMYt",
+an:"R1-4 센텀 제원(46층·2981세대·환지방식). ★센텀도 '환지방식' 표방 → '환지방식 vs 순수지주택' 프레임은 센텀에 안 통함. 대 센텀 차별화는 토지확보·한라·선도로.",
+b:`경기 용인시 처인구에서 추진 중인 역삼 도시개발사업 내 지역주택조합아파트 '용인행정타운 센텀스카이'가 조합원을 모집 중이다. 이 단지는 최고 46층, 2981세대(전용 49㎡ 497·59㎡ 1035·71㎡ 725·84㎡ 724)의 대규모 단지로 조성된다.\n\n용인시 최대 규모(69만1604㎡)의 개발면적을 자랑하는 역삼도시개발사업지구 안에서 토지주에게 조성된 땅의 일부를 돌려주는 환지방식으로 추진되며, 오피스텔·호텔·행정기관·의료·상가 등 상업·업무시설이 복합 계획됐다.\n\n지난 11일 환지계획 인가를 승인받아 사업 시행에 속도가 붙을 전망이다. 조합 관계자는 \"환지계획 인가 승인으로 토지확보(환지) 및 인허가 리스크로 조합원 모집에 난항을 겪는 기존 지역주택조합과 차별화할 수 있게 됐다\"고 말했다. 주택홍보관은 용인 수지구 동천동에 마련돼 있다.`},
+
+{t:"용인 역삼지구 도시개발사업, 10년 만에 첫발 떼나 (체비지 구조 확정)",s:"중부일보 · 2018-09-16",c:"c2",imp:"🟢",st:3,r:1,pid:"1lgK0lNk2xG_b1bIr_QlwTVTd1PhlhL1G",
+an:"체비지 구조 확정: 1번 체비지(800억)=우리 R1-3 센트럴시티(선도)/2번 체비지(2200억)=R1-4 센텀. 환지방식·2017.8 환지계획 인가. 우리=지구 내 가장 먼저 추진된 선도 사업.",
+b:`10년째 표류하던 '용인 역삼구역 도시개발사업'이 첫 번째 체비지 매각을 발판으로 본격화할지 관심이 모아지고 있다.\n\n용인역삼구역도시개발사업은 처인구 역북동 363번지 일원(용인시청 주변) 69만2120㎡ 부지에 주상복합·업무·상업시설이 들어서는 사업으로, 토지주에게 보상금 대신 새로 조성될 땅으로 돌려주는 '환지' 방식으로 추진된다. 2011년 8월 실시계획 인가, 지난해(2017) 8월 환지계획 인가를 마쳤다. 토지주(도시조합원) 280여 명.\n\n800여 명 조합원으로 구성된 용인역삼지역주택조합이 전체 사업비 4500억여 원 중 3000억여 원을 조달할 2곳의 체비지 중 1곳(800억여 원)을 매입해 주상복합건설사업을 추진한다. 이를 위해 도시조합이 학교부지 결정 절차를 진행 중이다. 학교부지 결정 후 사업계획 승인을 받아 착공에 나설 예정이다.\n\n한편, 나머지 2200억여 원 사업비를 조달할 두 번째 체비지 사업 조합도 17일 창립 총회를 앞둔 상태다.`},
+
+{t:"용인시, 계약 해지된 조합주택이…회원모집 피해 확산 ((주)역삼주택)",s:"경인일보 · 2018-04-30",c:"c2",imp:"🔴",st:3,r:1,pid:"1rLoSf6AbpaBI-YK3sgjjOc6zEfIsum67",
+an:"(주)역삼주택(R1-4, 2번 체비지 2190억)이 계약 해지 통보 후에도 모집 강행. ⚠이름 혼동 주의: '(주)역삼주택'(R1-4) ≠ '용인역삼지역주택조합'(R1-3 우리).",
+b:`용인 역삼지구 내에서 지역주택조합을 추진하던 (주)역삼주택이 토지대금 지급 등 계약을 이행하지 않아 계약해지 통보를 받고도 조합원을 모집하고 있는 것으로 드러났다.\n\n용인역삼도시개발조합은 2016년 12월 (주)역삼주택과 도시개발지구 내 체비지 6만2천여㎡를 2천190억원에 매매계약을 체결했다. 계약 당시 견본주택 개관 후 4개월 내 조합원 30% 모집, 2017년 8월까지 50%가 안 될 경우 자동 계약해지를 명시했다.\n\n역삼주택이 계약률·토지대금 지급기한 등을 이행하지 않아 도시개발조합은 지난해 10월 계약해지를 결정·통보했다. 이에 역삼주택은 '처분금지가처분신청'을 하고 '100% 토지확보' 현수막과 홍보관까지 설치해 조합원을 모집하고 있다. 이 때문에 사업이 늦어져 500여 명 조합원이 피해를 보고 있다.`},
+
+{t:"용인 역삼지구 17년간 표류…피눈물 흘리는 도시개발조합원 (R1-3 체비지 특혜 의혹)",s:"매일일보 · 2020-05-20",c:"c2",imp:"🔴",st:3,r:1,pid:"1NDa444X0KBIGVINhrVM9bD7u68eQxq3J",
+an:"⚠본사업(R1-3) 직접 리스크. 다우아이콘스가 R1-3을 오륜산업/용인역삼지역주택조합에 특혜 매각 의혹(감정가 850억→800억, 계약금 6억, 702→1042가구). 잔금 미지급·200억 대출 의혹. 현행 사실관계 대표님 확인 필요.",
+b:`용인역삼지구 체비지 매각 과정에서 특정 기업 특혜 등 불법 정황이 드러나 논란이다. 용인역삼지구는 처인구 역북동 363번지 일대 69만2140㎡ 규모로 2003년 도시개발구역 지정됐다.\n\n2017년 환지계획인가 직후, 사업대행사 (주)다우아이콘스는 체비지가 확정되지 않았음에도 역삼지구 R1-3블록이 향후 체비지로 정해질 것으로 예상하고 오륜산업주식회사가 설립한 용인역삼지역주택조합에 매각했다. 이 과정에서 총 감정가액 850억원 토지를 800억원에 거래했으며, 계약금도 10%인 80억원이 아니라 6억원으로 계약하는 등 특혜 정황이 포착됐다.\n\nR1-3블록은 지구 내 가장 사업성 높은 주상복합 용지로, 2016년 12월 인가 시 702가구에서 1042가구로 더 많은 가구수를 배정하는 특혜까지 준 것으로 드러났다(지구 전체는 5292→5256 감소).\n\n용인역삼지역주택조합과 오륜산업개발은 매매가 800억 중 182억 중도금만 납부, 잔금 미지급 상태다. 체비지 증명서 발급 불가 상태에서 도시개발조합장 독단으로 증명서를 발급받아 200억원을 대출받았고, 이 중 70억을 무관한 토지구입비로 사용했다는 의혹도 있다.`},
+
+{t:"용인역삼지구 지역주택조합 피해 우려 (도개조 일방적 매매계약 파기)",s:"국토일보 · 2017-11-20",c:"c2",imp:"🔴",st:2,r:1,pid:"17Dfg-_Cm1qEWvxuHGxYeRkalvX_ct0jk",
+an:"R1-4(용인시청역 지역주택조합, 4블럭) 계약분쟁의 2017년 시초. 도개조가 모집률 50% 미달 이유로 계약해제·제3자 매각공고, R1-4 가처분·소송. 이후 8년+ 장기 리스크의 시작점.",
+b:`역삼구역 도시개발사업조합이 아파트를 건립하려는 용인시청역 지역주택조합에 일방적인 매매계약 파기 통보를 해 법적 소송으로 치닫고 있다.\n\n2016년 12월, 용인시 역삼지구 4블럭 '(가칭)용인시청역 지역주택조합'은 토지 확보를 위해 토지소유주 '용인역삼구역 도시개발사업조합' 및 업무대행사 D사와 토지매매계약을 체결했다.\n\n문제는 10월 16일 도시개발조합과 업무대행사가 조합원 모집률이 50%에 미치지 못했다는 이유로 일방적 계약해제를 통보하고, 11월 8일 제3자 토지매각 공고를 게재한 것이다. 용인시청역 지역주택조합은 '토지매각금지가처분'과 '계약해제무효확인소송'을 진행 중이며 계약금 100억원은 예치했다. 당시 조합원 755명. 업무대행사 대표는 분양·공사 명목 금품수수 의혹으로 피소돼 조사받고 있다.`},
+
+{t:"G&B대구수성, 용인 역삼도시개발 우선협상대상자 선정 (시공 호반건설)",s:"인천일보 · 2020-06-07",c:"c2",imp:"⚪",st:2,r:1,pid:"12nulcpPcFhswXS54N-8FjwGmZSczrpNm",
+an:"상위 도개조 우선협상=G&B대구수성(시공 호반건설·금융 부산은행, 2020). 우리 R1-3(한라)와 별개 트랙 → 시공사 혼동 주의. 상위 도개조 PM 경쟁·정상화 시도의 한 국면.",
+b:`용인지역 초미의 관심사였던 역삼도시개발사업의 우선협상대상자로 G&B대구수성㈜이 선정됐다. 시공사는 ㈜호반건설, 금융사는 ㈜부산은행이 각각 참여하게 됐다.\n\n용인 역삼도시개발조합은 지난 3일 제39차 대의원총회에서 6개 업체의 제안 설명을 들은 뒤 대의원 투표로 G&B대구수성을 우선협상대상자로 선정했다. G&B대구수성은 사업계획서 작성 실사와 투자계획서 등을 제출하고 약 2개월 후 사업추진 여부를 결정한다.\n\n그동안 용인 역삼도시개발 사업은 조합원 간 내부분쟁·소송으로 기존 PM사가 반복해 사업을 포기하면서 10여 년 지지부진했다. 처인구 역북동 363번지 일대 69만여㎡ 규모 민간 도시개발사업이다.`},
+
+{t:"용인 역삼지구 도시개발사업조합 임시총회 개최 (PM 세정파트너스·현대건설)",s:"시민일보 · 2020-05-10",c:"c2",imp:"⚪",st:2,r:1,pid:"1aSvG12AhWw0VJjeNguFC_zKQWy-XaHwy",
+an:"상위 도개조 2020.5.8 총회서 PM에 세정파트너스(현대건설·교보증권) 1순위. But #11은 G&B대구수성(호반) → PM 경쟁·혼선. 우리 R1-3(한라)와 별개.",
+b:`10여 년 지지부진했던 용인 역삼지구 도시개발사업에 대해 지난 8일 조합원 임시총회가 열렸다. 세정파트너스 외 5개 업체에 대한 PM사 선정을 안건으로 진행됐고, 세정파트너스가 조합원 호응으로 1순위에 안착했다.\n\n세정파트너스는 \"사업비가 체비지 가격을 초과하여도 조합원 추가 부담금이 없고, 현대건설(주)·교보증권 등과 컨소시엄으로 사업비 전체를 조달하고 책임준공을 하겠다\"고 밝혔다. 체비지 일괄 매입 시 계약 후 5일 이내 계약금 10%를 신탁사에 예치하고, 기반시설 공사를 조기 착수하며, 조합 대출채권(NPL)을 공매 낙찰한 세정파트너스가 조합의 주요 소송을 전담한다는 내용이다. 교보증권은 대출확약서를, 현대건설은 책임준공을 확약했다.`},
+
+{t:"'20년 방치' 용인 역삼도시개발사업 살아나나…조합, 임시총회 개최 공고",s:"경인일보 · 2025-02-28",c:"c2",imp:"🟢",st:3,r:1,pid:"1Oz_0XtylKY2EM53366LonwpDP-q83ZfE",
+an:"상위 도개조 새 집행부 임시총회(2025.4) 공고=정상화 시도. ⚠기반시설·체비지 관련 세금·부담금 약 1,200억대 체납 리스크. 집행부·체납 해소가 핵심 모니터링 지표.",
+b:`용인시 행정타운 주변 노른자위 땅이면서도 갈등·사법리스크로 20여 년 방치됐던 역삼구역 도시개발사업이 다시 살아날지 주목된다.\n\n용인 역삼구역 도시개발사업조합은 4월 19일 처인구청 대회의실에서 새 집행부 구성을 위한 임시총회 개최를 공고했다. 부지면적 약 68만여㎡ 상업·주거지역에 5256가구 공동주택을 조성한다. 2009년 구역지정, 2011년 실시계획인가, 2017년 환지계획인가 등 행정절차를 완료했으나 내·외부 법적분쟁으로 진척되지 못했다.\n\n조합은 기반시설 부지·체비지에 대한 국세·지방세·광역교통부담금 등 1200억원대 체납이 진행되고 있고, 소송·분쟁 피해보상금 이자도 매년 증가하고 있다. 이영환 전 조합장이 무자격조합원 가처분으로 직무정지되면서 수원지법이 문병상 조합장 직무대행자를 선임, 임시총회 절차를 진행 중이다.`},
+
+{t:"용인 역삼구역사업 시행사 '다우 아이콘스', 조합원들에게 사업정상화 호소",s:"인천일보 · 2025-05-01",c:"c2",imp:"🔴",st:2,r:1,pid:"1flnunwbr16qcNvLw8Pzli8ZHb60SSR8u",
+an:"상위 시행사 다우아이콘스(2004~ 1700억 투입) 미납세금 700억·손배청구 2600억(삼가2힐스·4블록). ※세금 700억은 다우 법인세·우리 조합 세금 아님 → 사업지(체비지·기반시설 부지) 국세·지방세·부담금(도개조 부담). 계약해지 불가 주장. 시행권 분쟁이 지구 정상화 변수.",
+b:`용인 역삼구역 도시개발사업 시행 주체 '다우 아이콘스'가 사업 지연 파행을 막기 위해 조합원들에게 정상화 촉구 통고문을 보냈다. 다우는 2004년 6월부터 약 1700억 원을 투입해 행정복합타운 조성을 추진해 온 부동산 개발기업이다.\n\n4월 30일 조합원 315명에게 전달한 통고문에 따르면, 현재 사업지는 미납 세금만 약 700억 원에 달하며 매년 140억 원의 추가 비용이 발생하고 있다. 삼가2지구 힐스테이트와 4블록 지역주택조합 등과 관련한 손해배상 청구액은 약 2600억 원 규모다.\n\n다우는 \"2021년 11월, 2023년 6월, 2025년 1월 등 법적 판결에 따라 계약해지·해제는 불가능하다\"는 입장이며, 조합의 새 시공사 선정 움직임에 대해 \"이미 2021년 가처분으로 금지된 전례가 있다\"며 법적 대응을 예고했다.`},
+
+{t:"[단독] 조합원 2700명, 체비지 매각 의혹…1300억 자금 행방 논란 (3·4블럭)",s:"국제뉴스 · 2026-07-24",c:"c2",imp:"🔴",st:3,r:1,pid:"1Yu00L0FZyfB2cwMcoxUf2DULGzFciNfk",
+an:"⚠⚠ 도개조 3·4블럭 체비지 매각 의혹·조합장 배임 고소(2026.7 최신). '3블럭=우리 R1-3' 포함 여부 대표님 확인 필수. 감정평가·총회·입찰 없이 내부거래 의혹.",
+b:`용인역삼도시개발조합이 조성한 체비지 매각 절차를 둘러싸고 조합원들이 의혹을 제기했다. 3·4블럭 지역주택조합 사업에 참여한 조합원 2700여 명으로부터 모인 약 1300억 원의 자금 사용처가 주요 쟁점이다.\n\n조합원들은 감정평가·총회 의결·입찰 공고 등 통상 절차 없이 내부거래 방식으로 계약이 체결됐고, 기반시설 준공이 완료되지 않은 상태에서 지역주택조합 업무대행사에 체비지가 매각됐다고 주장했다. 매수인인 업무대행사가 계약금·중도금·잔금을 지급할 능력이 없다는 지적이 경기남부경찰청 고발의 핵심이다.\n\n조합원 측에 따르면 토지 계약금이 우선 지급되지 않고 업무대행비·조합원 모집수수료 등 대행사에 이익이 되는 항목부터 먼저 지출됐다. 2016년 모집 당시 84㎡ 기준 약 3억원대 분양가를 제시했다. 체비지 매각 의혹은 경기남부경찰청에 고발됐고, 현 도개조 조합장은 배임 혐의로 동탄경찰서에 고소됐다.`},
+
+{t:"용인시청역 지주택, 8년째 '먹튀' 논란 (R1-4 센텀)",s:"국제뉴스 · 2025-09-30",c:"c2",imp:"🔴",st:3,r:1,pid:"1IhQaYZrygUagQ8mM1QyEiqkD07wwtmGV",
+an:"R1-4 센텀(32BL-4로트). 2017 평당 850만 약속→예상 2200만, 84㎡ 추가분담금 5억+, 2.9억→8억+. 1780세대 이하 모집해야 하나 약 2900세대 모집·520억 소진 의혹. 혼동 방지.",
+b:`2017년 \"평당 850만원 이하 공급\" 약속과 함께 조합원을 모집했던 용인시청역지역주택조합추진위원회(용인시 역삼구역 도시개발사업지역 32BL-4로트)의 사업이 8년째 표류하고 있다.\n\n추진위는 토지소유자인 역삼도시개발조합에 토지비를 제대로 지급하지 않았고, 1780세대 이하로 모집해야 함에도 약 2900세대를 모집, 조합원 계약금 520억원을 업무대행비·모집 수수료·홍보관 운영비 등으로 소진했다는 의혹을 받고 있다.\n\n당장 사업이 재개돼도 2031년에나 입주 가능할 것으로 예상된다. 최초 약속 평당 850만원은 옛말이 됐고 현재 예상 분양가는 평당 2200만원까지 치솟아 84㎡ 기준 추가 분담금만 5억원이 넘을 것으로 예상된다. 최초 최대 2억9천만원이던 가격이 현재는 8억원을 넘어설 것으로 예상되면서 기존 조합원 중 10% 이내만 입주할 수 있을 것이라는 전망도 나온다.`},
+
+{t:"[단독] (가칭)용인 시청역 지주택 약 520억 증발 의혹 (책임 공방)",s:"국제뉴스 · 2025-10-14",c:"c2",imp:"🔴",st:2,r:1,pid:"1t8nQvq1ujBEzqhIWpTvCkCQcdcYYlDMX",
+an:"R1-4 센텀 520억 증발 공방. (주)역삼주택(대행사) 반박: 100억은 서희가 국제신탁 예치, 520억 책임은 추진위. 조사대상=역삼주택·추진위·서희·국제신탁. 서희·다우·국제신탁 얽힘 확인.",
+b:`용인 역삼 지역주택조합 '520억 증발' 의혹을 둘러싸고 업무대행사·추진위·도시개발조합 간 책임 공방이 격화되고 있다.\n\n업무대행사 (주)역삼주택 측은 '계약금 100억 국제신탁 예치 후 조합 수령 종용' 주장에 대해 \"100억은 역삼주택과 무관하며, (주)다우아이콘스와 서희건설이 공동 토목공사 계약을 체결하면서 서희건설이 시공 능력을 입증하기 위해 국제신탁에 예치한 금액\"이라고 주장했다.\n\n또한 '조합원 계약금 약 520억 업무대행비 사용' 주장에 대해 \"역삼주택은 단순 업무대행사일 뿐이며 책임은 추진위에 있다\"며 \"2300세대에게 업무대행비 명목으로 520억을 인출해 사용했다면 전수 조사가 필요하다\"고 주장했다. 조사 대상으로 역삼주택·추진위·서희건설·국제신탁사를 지목했다.`},
+
+{t:"[단독] 용인 역삼 재개발, 600억 증발 의혹…추가 분담금 '벼랑 끝' (R1-4 센텀)",s:"국제뉴스 · 2025-12-05",c:"c2",imp:"🔴",st:3,r:1,pid:"1V_qvmXvdravwxqw9uuTpGL3t83NHR-Gp",
+an:"R1-4 '용인시청역 지역주택조합(4블록)' 600억 증발·토지 제로·서희 유착 의혹. ⚠⚠브랜드명 혼동 최고위험: '용인시청역 지역주택조합'(R1-4) vs 우리 '용인시청 앞 센트럴시티'(R1-3). 방어 명문화.",
+b:`'용인시청역 지역주택조합(4블록)'은 조합원 2300명이 납부한 약 600억원의 조합비 행방이 묘연한 가운데, 300억원 토지대금 마련을 위해 무리한 분담금을 요구하며 벼랑 끝으로 내몰리고 있다.\n\n2016년부터 시작돼 9년간 약 600억원을 모금했으나 토지 확보는 계약금을 1원도 지급하지 않은 전무한 상태다. 실체가 불분명한 3개 법인(글로벌씨엔디·와이제이엔·부호)에 약 180억원이 지급됐고, 잔여 자금은 약 30억원에 불과하다는 주장까지 나온다.\n\n2016년 토지계약이 업무대행사(역삼주택) 명의로 체결된 점, 업무대행사 수수료 357억7천만원 채권양도 승낙서 등이 '배임'·'불법 노예 계약서' 논란을 낳고 있다. 특히 추진위원장이 \"총회에서 서희건설을 시공사로 선정해주면 자금을 지원해주겠다\"는 공지를 올린 사실이 확인돼 서희건설 유착 의혹까지 불거졌다. 조합원들은 비상대책위를 결성하고 검찰 고발을 준비 중이다.`},
+
+{t:"용인시청역 지역주택조합(센텀스카이), 역삼구역 도시개발사업지 내 절차 진행",s:"조선비즈 · 2026-01-27",c:"c2",imp:"⚪",st:2,r:1,pid:"1gXo_VTdDHlNjCJpvUz31P0TSYQNAwUvC",
+an:"R1-4 센텀 절차 진행(체비지 19,063평·2192억 계약, 300억 납부). 2981→2452세대 조정, 10월 설립인가 신청 계획. ★이 기사서 우리 센트럴시티 '사업계획승인' 획득 확인. 90% 토지계약률 요건.",
+b:`용인 역삼구역 도시개발사업지구 내 용인시청역 지역주택조합사업(센텀스카이)이 토지 매매대금 일부를 납부하며 절차를 진행하고 있다.\n\n조합에 따르면 토지 매매대금 중 계약금·1차 중도금 총 300억원을 납부했다. 사업 부지는 용인 역삼구역 도시개발사업조합과 2016년 12월 15일 체결한 계약에 따라 체비지 약 19,063.55평을 2,192억3,082만원에 취득하는 조건이다. 2017년 초 2,981세대 규모로 모집을 시작해 현재 약 1,900여 세대 모집이 진행됐다.\n\n도시개발조합의 개발계획 변경에 따라 단지 규모는 2,981세대에서 2,452세대로 조정될 예정이며, 오는 10월 조합 설립 인가 신청을 계획하고 있다.\n\n인근에서는 2016년 비슷한 시기에 추진된 용인 역삼 지역주택조합(센트럴시티)이 조건부 조합 설립 인가를 거쳐 사업계획승인을 받은 바 있다. 지역주택조합 설립 인가 요건은 2020년 주택법 개정 이후 강화됐으며, 국토부 제도 개선안에 따르면 설립 인가·모집 신고에는 토지 매매계약률 90% 이상을 확보해야 한다.`},
+
+{t:"[단독] 용인역삼구역 도시개발사업, 비리 의혹 속 재개 시동",s:"국제뉴스 · 2025-10-25",c:"c2",imp:"🔴",st:3,r:1,pid:"1JwctycjbKoEMtQ-uBHmdnusiOGt4U8WE",
+an:"상위 도개조 비리 의혹(강대영 전 다우 대표 13억 뇌물 구속·옥중사망, 570억 사용처 불투명, 페이퍼컴퍼니 180억, 우리자산신탁 책임론). 무게중심=4블럭·도개조. 기반시설 재개=간접 호재. 신탁 관계 내부확인.",
+b:`용인시청 인근 21만 평 부지 '용인역삼구역 도시개발사업'이 조합 내부 분쟁으로 8년간 멈췄다가 최근 기반 시설 공사를 재개하며 정상화 기대감을 높이고 있다. 그러나 각종 비리 의혹이 발목을 잡을 수 있다는 우려가 제기된다.\n\n하수종말처리장 발주 과정에서 강대영(전 다우아이콘스 대표)이 13억원 뇌물수수 혐의로 구속됐다가 옥중 사망했다. 전 도시개발조합장 J씨에게 무계약금 토지계약 편의 대가로 3억7천만원 상당 금품을 수수했다는 의혹과 4블럭 법인 주식 13% 확보 정황도 있다.\n\n(주)역삼주택(4블럭)이 업무대행비 등으로 약 570억원을 지출했으나 사용처가 불투명하고, 페이퍼컴퍼니 3개사(글로벌씨엔디·와이제이엔·부호)에 약 180억원이 지급된 경위에 대해 우리자산신탁의 자료 공개 요구가 높다. 현 이영환 도시개발조합장이 이사회·대의원 의결 없이 9년 전 토지매매계약 이행을 용인시청역 지주택 추진위에 통보한 점도 4블럭과의 커넥션 의혹을 낳고 있다.`},
+
+{t:"[단독] 용인 역삼지구 지주택, '희망고문' 지속 (R1-4)",s:"국제뉴스 · 2025-10-22",c:"c2",imp:"🔴",st:3,r:1,pid:"1Lh7PmsSvSMVFG752putv3ywWdkygUbKf",
+an:"기사가 '4블럭 용인시청역 지역주택조합' 명시 → R1-4 센텀. 추가 분담금 약 5억, 착공 무산, 토지 미확보, 도개조 해지통보, 집단소송. 혼동 방지 FAQ + 우리 팩트(한라·정상화·사업계획승인) 차별화.",
+b:`2025년 10월, 용인시 처인구 역삼동 일대 지역주택조합 사업이 장기 표류하며 조합원들의 시름이 깊어지고 있다.\n\n'저렴한 가격'과 '확정 분담금'을 내세웠던 초기 홍보와 달리, 9년 가까이 지난 현실은 물가상승·사업지 판단 착오로 천문학적 추가 분담금이 예상되며, 최종 확정분담금도 제시하지 못한 채 조합원들에게 약 5억원의 추가 비용이 예상되고 있다.\n\n당초 2020년 입주 목표였으나 사업지 문제로 착공조차 하지 못하고 있다. 조합원이 지급한 자금은 토지 한 평 사지 않고 부대비용으로 소진됐으며, 토지 매도자인 용인 역삼도시개발조합에서 해지통보를 하고 있다. 전문가들은 \"4블럭 용인 시청역 지역주택조합은 100% 성공할 수 없다\"고 지적한다. 일부 조합원들은 집단 민·형사 소송을 검토 중이다.`},
+
+{t:"용인의 심장 역삼지구 20년째 표류, 갈림길에 서다 (환지 취소 소송·공공개발론)",s:"오마이뉴스 · 2026-05-13",c:"c2",imp:"🔴",st:3,r:1,pid:"1ra-sNMSaPqau5G96kf_egeu0tuHbdvLL",
+an:"⚠지구 전체 시스템 리스크. 환지예정지 지정 10년째 '조건부', 지정취소 소송 진행 → 조합 패소 시 20년이 법적 '무효'되어 사업 증발 위험. 100건+ 소송·공공개발론. 우리 R1-3 권원 영향 법률검토·대표님 확인.",
+b:`용인시청 정문 앞 '금싸라기 땅' 역삼구역 도시개발사업(약 69만㎡, 21만평)이 20년 넘게 멈춰 서 있다. 6·3 지방선거를 앞두고 용인시 행정의 신뢰도·추진력을 검증하는 잣대로 부상하고 있다.\n\n토지주에게 개발 후 땅으로 돌려주는 '환지 방식'으로 시작돼 약 5256세대, 2017년 준공 목표였으나 표류 중이다. 2009년 구역지정, 2011년 실시계획인가, 2017년 환지계획인가(정찬민 시장)를 받았으나 조합 내분·수십 건 소송·체납으로 사실상 중단됐다.\n\n핵심인 환지 예정지 지정조차 10년 넘게 '조건부' 딱지를 떼지 못하고 있다. 용인시가 8가지 핵심 선결 조건을 걸고 환지예정지를 지정했으나 10년이 지나도록 이행하지 못했다. 일부 조합원이 진행 중인 환지예정지 지정 취소 소송에서 조합이 패소할 경우 20년 세월이 법적으로 '무효'가 되어 사업 자체가 증발할 위험이 크다. 역삼지구는 100건이 넘는 소송에 휘말려 있다.\n\n민간 조합으로는 해결이 어려우니 환지 지정을 취소하고 용인도시공사 등이 수용해 개발하자는 '공공개발론'도 조심스럽게 나오고 있다.`},
+
+{t:"용인시청역 지역주택조합, 임시총회 성원…토지대금 등 총 300억원 납부 (R1-4)",s:"조선비즈 · 2025-12-22",c:"c2",imp:"⚪",st:2,r:1,pid:"1CR_k-2fsdCySlZo2FHf-oy70AFk7rnW8",
+an:"R1-4 센텀 긍정 보도(#12 600억 증발과 동일 사건 반대 프레이밍). 12/7 총회서 서희 시공 선정·300억 납부. R1-4를 '끝난 사업'으로 단정 말 것(회복 시도). 상위 도개조 변경인가 추진=지구 진전.",
+b:`용인시청역 지역주택조합이 임시총회에서 성원 기준을 충족해 안건을 가결하고 사업 지속을 공식 확정했다. 이어 용인역삼구역 도시개발사업조합에 토지 대금 계약금·중도금 1차 총 300억원을 납부하며 정상화 국면에 접어들었다는 평가가 나온다.\n\n조합은 2025년 12월 7일 임시총회를 개최했고, 토지 대금 납부 자금 조달 안건과 함께 ㈜서희건설을 시공사로 선정하는 안건도 가결됐다. 300억 납부는 조합원 3·4차 계약금 조기 납부와 시공사 서희건설의 자금 지원으로 이뤄졌다.\n\n한편 용인역삼구역 도시개발사업조합도 최근 임시총회에서 개발 계획 변경·실시 계획 변경 안건을 가결하고 변경 인가 신청을 추진 중이어서, 도시개발사업과 지역주택조합 사업이 병행 정상화될 가능성에 관심이 모인다.`},
+
+{t:"[단독] \"600억 증발? 이건 사기극!\"…짓밟힌 서민들의 꿈 (3BL 703명)",s:"국제뉴스 · 2025-10-17",c:"c2",imp:"🔴",st:3,r:1,pid:"1wL6u1DFnP_wBAHLk8-qAzfAVj0v4YL-h",
+an:"⚠⚠ 절대 최우선. '용인 역삼 지역주택조합(3BL)' 703명 600억 손실 주장·200억 대출 의혹. 3BL·703명·200억이 우리 R1-3 지표와 일치 → 우리 지목 가능성 높음. 사실관계·대응 대표님 확인 시급.",
+b:`용인 역삼 지역주택조합(3BL) 조합원들의 절규가 이어지고 있다. 2015년 창립총회 이후 10년, 703명의 조합원들은 약 600억 원이라는 돈을 잃었다.\n\n조합원들이 낸 계약금·중도금 총 600억원이 사라졌다는 것이다. 조합 측은 \"사업 비용으로 사용했다\"고 주장하지만 세부 내역은 공개하지 않고 있다. 특히 용인역삼지역주택조합 3BL은 토지를 담보로 2금융권에서 200억원을 대출받아 용인역삼도시개발조합에 입금한 과정이 불법을 의심케 한다.\n\n조합 운영을 맡은 업무대행사 대표가 '검찰 수사관 출신'이라는 점, 세대당 약 1500만원의 수수료를 챙긴 점 등이 도마에 올랐다. 조합원들은 특검 도입을 주장하고 있다. 한편 김윤덕 국토부 장관의 '지역주택조합 폐지' 발언(10.15)으로 전국 사업장에 비상이 걸렸다.\n\n※ 편집 주의: 동일 매체·기자가 R1-4(센텀) '600억 증발'도 반복 보도한 바 있어, 본 기사의 '3BL' 지목이 우리 R1-3를 정확히 가리키는지 대표님 확인 필요.`},
+
+// ===== ③ 경쟁·인근단지 =====
+{t:"용인 청약시장, '드마크 데시앙' 전용 59㎡ 이하 외면…지역 외 1순위 추가 청약",s:"스트레이트뉴스 · 2021-04-14",c:"c3",imp:"⚪",st:2,r:1,pid:"1MQkD8NGtiunWdyAeliIPlHXJySBsjpEm",
+an:"처인구 74·84㎡ 중형은 강세(17:1), 59㎡ 이하 소형은 수요 취약(미달). 충원·분양 중형 중심 소구. ※2021년 기사, 흐름 참고용. 기사에 용인역삼지역주택조합(1180가구) 유망단지로 거론.",
+b:`태영건설 '용인 드마크 데시앙'(처인구 김량장동 309, 용인8구역 재개발)이 일반공급 1순위 청약에서 전용 74㎡(7.79:1)와 84㎡(17.38:1)는 순위 내 마감했으나, 전용 51·59㎡ 등 4개 소형 주택형은 지역 내 미달로 서울·경기 지역 외 1순위 청약으로 넘어갔다(51㎡B·59㎡B는 각 12가구 미달).\n\n3.3㎡당 분양가 1,176만원, 84㎡형 3억9,570~4억2,730만원. 올해 용인시에는 힐스테이트 용인(3,731가구), 고림지구 힐스테이트(2,718가구), 용인역삼지역주택조합(1,180가구), 남곡 경남아너스빌(1,176가구) 등 유망단지가 분양 대기 중이다.`},
+
+{t:"[통합] 힐스테이트 용인 역삼(R1-4·현대건설) 조합원 모집 PR 7건",s:"세계파이낸스·경상일보·글로벌경제 · 2024-10",c:"c3",imp:"🔴",st:2,r:1,pid:"1FW58j83R-seHhdd2YXgdtBUHc4VWvh3L",
+an:"R1-4 힐스테이트(현대건설, 540세대+272실, 84㎡, 5억초반, 중도금무이자·발코니무상). 토지 97.57% 주장. ★차별화 검증: 힐스=비체비지(대표님 확정)→소유권 성격 검증 필요. 우리=체비지 기반. 인허가도 우리(사업계획승인)가 선행.",
+b:`힐스테이트 용인 역삼은 역삼 도시개발 R1-4블록(역북동 산100-3 일원)에 현대건설 시공으로 지하4~지상38층 5개동, 아파트 540세대+오피스텔 272실(전용 84㎡ 단일, 84A·B·C) 규모로 조합원을 선착순 모집 중이다(2024.10~).\n\n평당 약 1,500만원, 34평 5억 초반(일반분양 대비 1억↓). 계약금 정액제·발코니 무상확장·중도금 60% 무이자. 2024.10.8 신고필증 승인, 2030년 입주 예정. 토지매입 97.57%·신탁등기 완료를 주장한다.\n\n입지: 용인시청역 도보 7~8분, GTX-A 구성역 차 15분, 삼가초 초품아, 반도체 클러스터 배후(역북 포함 약 1만4,800가구 주거벨트).\n\n[아주경제 르포 2025-04-13 확인] 힐스테이트 용인역삼은 "조합 방식 특성상 조합 설립인가·사업계획승인 신청 등 인허가 절차가 남아 있는 상태"로, 2026년 8월 착공 목표·2030년 7월 입주 예정이다. → 사업계획승인을 이미 받은 우리 R1-3와 인허가 진도 격차.\n\n※ 대표님 확정: 역삼 힐스테이트는 '비(非)체비지'로 토지소유권 확보가 확인되지 않음. '97.57%' 주장은 별도 검증 대상.\n\n(통합 대상 파일 7건: 세계파이낸스 2024-10-11, 경상일보 2024-10-08/10-14/10-20/10-26/11-02, 글로벌경제신문 2024-10-17)`},
+
+{t:"[통합] 삼가2지구 '힐스테이트 용인포레' — 유령아파트→입주 개시(도로 독립 해결)",s:"한겨레·뉴스핌·아주경제 · 2025-05~12",c:"c3",imp:"🟢",st:2,r:1,pid:"19286ImRKF8_bLRBerhuR5VZCKdW6oC13",
+an:"삼가2지구 힐스 용인포레(현대ENG, 1950세대 임대)가 역삼지구 도로 표류로 6년 '유령아파트'였으나, 공공(용인도시공사)이 공원 관통 대체도로(238억)를 직접 뚫고 시장·권익위 중재로 2025.12.31 입주 개시. 성공요인=공적사업·행정중재·공공 도로건설. 교훈=도로(인프라)가 실현 관문 / 우리 R1-3는 대로3-33 원인자부담으로 도개조 분리 선제 해결(별도 카드).",
+b:`용인시청 맞은편 처인구 삼가동 힐스테이트 아파트(삼가2지구)는 1950세대 기업형 민간임대(현대ENG·HUG 주택도시기금)로 2021년 준공됐으나, 진입도로가 없어 4~6년간 아무도 못 들어간 '유령 아파트'였다.\n\n■ 원인(구조적)\n· 애초 맞은편 역삼지구 도시개발이 진행되면 그 도로를 진입로로 쓰는 조건이었으나, 역삼지구가 20년 표류(조합장 교체·공사비 분쟁)하면서 도로가 끝내 안 생김 → 남의 사업 일정에 진입로를 건 것이 화근.\n· 빈 건물 유지·관리비로 세금 지속 투입(공사 측 '월 30억 낭비' 주장), 2025.10 HUG 국정감사서 보증 부실 쟁점.\n\n■ 해결 경위\n· 용인시가 역북2근린공원(사유지)을 매입해 공원을 관통하는 대체 진입도로(270m, 폭 20~30m, 사업비 약 238억) 조성 결정. 시행사 88억 부담해 2025.5 임시도로 선(先)개통.\n· 용인도시공사가 2024.6~2025.4 기반시설(진입도로·우오수관·가로등·신호등) 완공 → 2025.12.31 순차 입주 개시, 2026.3.31 입주 완료 목표, 정식도로 2026.4 완공 예정.\n\n■ 성공(해결) 원인\n· ① 대형사(현대ENG)+HUG 기금 공공임대 = 방치 불가한 공적 사업 → 개입 명분. ② 이상일 시장·국민권익위 중재로 교착 돌파. ③ 공공(용인도시공사)이 사업 주체로 238억 도로 직접 건설. ④ 세금 낭비·유령아파트 여론·국감 압박. ⑤ 공원 매입·관통 우회해법 결단(특혜·공원훼손 논란 감수).\n· 단, 특혜·안전 논란 잔존, 정식도로는 2026.4 목표라 완전 종결은 아님.\n\n■ 우리 R1-3 교훈\n· 반면교사: '건물 다 지어도 도로 없으면 못 산다', 그 도로가 역삼 도개조 정상화에 걸려 있었다는 실증.\n· 호재: 인접 역삼지구에서 공공이 실제 도로를 뚫고 입주가 시작 = 지구 인프라가 움직인다는 방증.\n· ★핵심: 우리 R1-3는 대로 3-33을 원인자부담·위수탁으로 도개조와 분리 독립 시행(9월 착공 예정) → 삼가2가 6년 방치 후 겨우 푼 '도로 종속' 문제를 선제 해소(별도 카드 참조).\n· ※ 외부는 경쟁·타단지 비방 금지, 사실 중심.`},
+
+// ===== ⑤ 용인시·시장 =====
+{t:"아파트 도시 용인, 누군가는 '오르고' 누군가는 '멈췄다'",s:"오마이뉴스(용인시민신문) · 2026-02-03",c:"c5",imp:"🔴",st:2,r:1,pid:"13pKKGz7agNI1Hc1-WKKMLoObsBY1CUyP",
+an:"용인시 '지역주택조합 등 피해사례집' 발간=지주택 부정 여론 역풍. 상승세는 수지구(4.25%)이고 처인구는 별개. 시청 앞 '역삼도시조합' 갈등 현수막. 대응은 환지·한라·반도체 배후 차별화로.",
+b:`경기 용인시는 '아파트 특례시'로, 주택의 약 70%가 아파트다. 한국부동산원 통계상 수지구 아파트 매매가는 2025년 11월 첫째 주부터 2026년 1월 둘째 주까지 누적 4.25% 상승해 분당(4.16%)·송파(3.63%)·과천(3.44%)을 상회했다. 그러나 기흥 상미지구 등 재개발 정체 지역은 빈집·노후로 '시간이 멈춘' 대비를 이룬다.\n\n용인시는 지난해 시민 피해를 줄이기 위해 '지역주택조합 등 피해사례집'까지 발간했다. 지자체가 특정 사업 유형에 경고성 사례집을 만든 것은 이례적이다. 용인시청 진입로 인근에는 '우리 조합과 삼가2지구, 역삼도시조합을 죽이는 용인시청은 과연 누구를 위해 일하느냐'는 현수막이 장기간 걸려 있다.`},
+
+{t:"도시개발사업지서 지역주택조합 아파트 인기몰이 (체비지 장점)",s:"파이낸셜뉴스 · 2015-11-17",c:"c5",imp:"🟢",st:2,r:1,pid:"1MBXH8ukA1ojZgH5p-glnePbBXKbLlfRv",
+an:"'체비지 지주택=지구단위계획 완료로 인허가·알박기·지연 리스크 적음' 언론 프레이밍. 우리 R1-3(체비지) 차별화 논리 보강(일반 지주택 대비). 역삼 G-state 2167가구(2015) 초기 기록.",
+b:`인천과 경기 용인, 충남 천안 등에서 대규모 도시개발사업부지 내 '체비지'를 활용한 지역주택조합 사업이 잇달아 공급된다.\n\n체비지에서 지역주택조합 사업을 추진할 경우 개발 예정지의 지구단위계획 등이 이미 완료돼 향후 인허가·건축계획 변경·알박기 등 사업지연 리스크가 적다는 것이 특징이다. 도시개발사업을 통해 공동주택과 도로·학교 등 편의기반시설이 종합 개발되기 때문에 입주 때 편리한 생활 인프라를 누릴 수 있다. 일반 지역주택조합보다 장점이 많아 체비지 내 사업은 순조로운 편이다.\n\n경기 용인시 처인구 역삼도시개발지구에서는 역삼지구 지역주택조합(가칭)이 이달 초 홍보관을 열고 '지스테이트(G-state)' 주상복합 단지 신규 조합원을 모집 중이다. 도시개발사업구역 내 체비지에서 추진되는 사업으로 아파트는 전용면적 59~84㎡ 총 2167가구가 들어선다. 인근에 역북지구·용인시청·용인세브란스병원 등이 가깝다.`},
+
+{t:"지역주택사업은 휘청이는데…방송·신문사업 강화 나서는 서희건설",s:"매일일보 · 2020-06-29",c:"c5",imp:"🟢",st:2,r:1,pid:"1_lQ6ruj5gcbm0YQOFI-dQy1IkHEHqV2c",
+an:"서희가 내외경제TV를 2019년 인수(지분 77.11%). 즉 우리 조합 부정 보도(#20·#23) 매체가 서희 계열=출처 편향 근거. 서희 지주택 계약취소 다발(용인역삼 포함)로 '서희 교체 합리적' 논거 보강.",
+b:`서희건설이 '내외경제TV'를 필두로 방송·신문사업을 강화하려는 모습이다. 서희건설은 지난해(2019) 9월과 11월 두 차례에 걸쳐 내외경제TV 지분 77.11%를 확보했고, '솔로몬 경제 TV'·'솔로몬 경제 신문' 상표권을 출원했다.\n\n다만 주력사업인 지역주택조합사업에서 계약취소가 이어지고 있다. 대구 내당지역주택조합이 서희건설과의 시공예정사 계약을 해지하고 GS건설로 변경했고, 부산부암지역주택조합과 용인역삼지역주택조합 등에서도 잡음이 불거지고 있다. 업계에서는 \"지주택사업에서 비보가 이어지는 상황에서 사업 확장은 무리\"라는 지적이 나온다.`},
+
+{t:"[르포] 분양 잇따르는 '반도체 클러스터' 용인…견본주택에 방문객 몰려",s:"아주경제 · 2025-04-13",c:"c5",imp:"🟢",st:2,r:1,pid:"1aCGpF98kC0I5jV_CnfSB5a5_I-lokncy",
+an:"반도체 배후 수요로 견본주택 성황(마크밸리·힐스역삼·푸르지오). 처인구 시장 온기 근거. 경쟁 벤치마크(마크밸리 84㎡ 5.38~5.93억·계약금 5%). 힐스역삼은 인허가 절차 남음 확인.",
+b:`비 내리는 궂은 날씨에도 용인시 수지구 신분당선 동천역 일대 견본주택에는 방문객이 끊이지 않았다. 현대건설 '힐스테이트 용인마크밸리', 지역주택조합 '힐스테이트 용인 역삼', '용인 푸르지오 원클러스터 2·3단지' 견본주택이 몰려 있다.\n\n용인 부동산 시장은 삼성전자·SK하이닉스가 처인구 일대에 조성하는 '반도체 클러스터' 배후 수요와 경강선 연장 등 미래가치가 주목된다. 마크밸리(남사지구)는 84㎡ 기준 5억3860만~5억9310만원, 계약금 5%, 2027년 12월 입주 예정이다.\n\n힐스테이트 용인역삼은 용인역삼도시개발사업구역 내에 위치해 에버라인 시청·용인대역이 가깝고, 조합 방식 특성상 조합 설립인가·사업계획 승인 신청 등 인허가 절차가 남아 있다. 2026년 8월 착공 목표·2030년 7월 입주 예정, 84㎡ 3타입 540가구다. 용인 푸르지오 원클러스터는 1단지 1681가구 완판, 2·3단지 2043가구로 총 3724가구 대단지다.`},
+
+// ===== 판독불가(스캔) =====
+{t:"한라 2100억 신축공사",s:"스캔본 · (한라 2109억 수주와 동일 추정)",c:"scan",imp:"🟢",st:0,r:0,pid:"1KF8y9ETR7AXNmb2fY375VUl_DFQiYbbH"},
+{t:"용인 역삼구역 도시개발사업조합·용인시, S건설 지분 쪼개기 방치·묵인",s:"스캔본 · 도개조/S건설 의혹",c:"scan",imp:"🔴",st:0,r:0,pid:"1j7wwLCzEe9fPfrn-gN-Vb9AkoGr1Kgfh"},
+{t:"용인 역삼도시개발사업, 조합원들간 마찰 등 내홍…갈등의 골 더욱 깊어질 전망",s:"스캔본 · 도개조 내홍",c:"scan",imp:"🔴",st:0,r:0,pid:"1B9aDMM8O2r0XPHt_oxqhBT7ZqgKG1weg"},
+{t:"이상일 용인특례시장, 시민과의 대화…처인구청사 이전·경찰대 부지·역삼도시개발 등 답변",s:"스캔본 · 일요신문 / 시장 정책",c:"scan",imp:"⚪",st:0,r:0,pid:"1dpIGMxge9i8se875pehtfNNdtjxr0RFz"},
+{t:"헤럴드경제 - '민생 대통령'…이상일 용인특례시장, 문제있는 조합주택 모두 해결한다",c:"scan",s:"스캔본 · 헤럴드경제 / 시장 정책",imp:"🟢",st:0,r:0,pid:"1JAyHOi07B4YM1y1HpaOK_ujxvMMDkAl2"},
+{t:"용인시 \"특례 권한 이양 시 수지구 중심 공동주택 리모델링 사업 활성화 기대\"",s:"스캔본 · 시장 정책",c:"scan",imp:"⚪",st:0,r:0,pid:"1gTRY8vP02WQYe1c3ibNm4sxmT8KDD-Sc"},
+{t:"이상일 용인특례시장, 처인구 삼가동 '늘푸른오스카빌' 입주자들과 생활환경 개선 간담회",s:"스캔본 · 시장 동정",c:"scan",imp:"⚪",st:0,r:0,pid:"1YRV7MvTTKahVGkF1ogOUNqcxoCAPALo-"}
+];
+
+let CUR="all";
+function counts(){const m={all:D.length};for(const k in CATS)m[k]=D.filter(d=>d.c===k).length;return m}
+function drawTabs(){
+  const m=counts();const t=document.getElementById('tabs');
+  let h=`<div class="tab ${CUR==='all'?'active':''}" onclick="setCat('all')">전체<span class="n">${m.all}</span></div>`;
+  for(const k in CATS)h+=`<div class="tab ${CUR===k?'active':''}" onclick="setCat('${k}')">${CATS[k].name}<span class="n">${m[k]}</span></div>`;
+  t.innerHTML=h;
+}
+function setCat(c){CUR=c;drawTabs();render()}
+function stars(n){return n>0?'<span class="b-star">'+'★'.repeat(n)+'</span>':''}
+function render(){
+  const q=document.getElementById('q').value.trim().toLowerCase();
+  let list=D.filter(d=>CUR==='all'||d.c===CUR);
+  if(q)list=list.filter(d=>(d.t+d.s+(d.an||'')+(d.b||'')).toLowerCase().includes(q));
+  // 새 기사(nw) 우선, 그 다음 추가일(ad) 최신순 — 원 순서 유지
+  list=list.map((d,i)=>({d,i})).sort((a,b)=>{
+    const an=a.d.nw?1:0,bn=b.d.nw?1:0; if(an!==bn)return bn-an;
+    const ad=a.d.ad||'',bd=b.d.ad||''; if(ad!==bd)return bd.localeCompare(ad);
+    return a.i-b.i;
+  }).map(x=>x.d);
+  const g=document.getElementById('grid');
+  document.getElementById('empty').style.display=list.length?'none':'block';
+  g.innerHTML=list.map((d,i)=>{
+    const idx=D.indexOf(d);
+    const cat=CATS[d.c].name;
+    const catBadge=d.c==='scan'?`<span class="b b-scan">${cat}</span>`:`<span class="b b-cat">${cat}</span>`;
+    const newBadge=d.nw?`<span class="b b-new">NEW ${d.ad||''}</span>`:'';
+    return `<div class="card ${d.nw?'isnew':''}" onclick="openM(${idx})">
+      <div class="badges">${newBadge}${catBadge}<span class="imp">${d.imp||''}</span>${stars(d.st)}</div>
+      <h3>${d.t}</h3>
+      <div class="meta">${d.s}</div>
+      ${d.r?`<div class="sum">${(d.an||'').slice(0,110)}${(d.an||'').length>110?'…':''}</div>`:`<div class="pdfhint">📄 스캔본 — 클릭 시 PDF 열기</div>`}
+    </div>`;
+  }).join('');
+}
+function openM(i){
+  const d=D[i];const pdf=d.url?d.url:(d.pid?`https://drive.google.com/file/d/${d.pid}/view`:'#');
+  const linkLabel=d.url?'🔗 원본 기사 열기':'📄 원본 PDF 열기 (구글드라이브)';
+  const cat=CATS[d.c].name;
+  const catBadge=d.c==='scan'?`<span class="b b-scan">${cat}</span>`:`<span class="b b-cat">${cat}</span>`;
+  let body;
+  if(d.r){
+    body=`<div class="sec-label">우리 사업 관점 분석</div>
+      <div class="analysis"><div class="row">${d.an||''}</div></div>
+      <div class="sec-label">기사 전문</div>
+      <div class="article">${(d.b||'').replace(/</g,'&lt;')}</div>
+      <div style="margin-top:18px"><a class="pdfbtn" href="${pdf}" target="_blank">${linkLabel}</a></div>`;
+  }else{
+    body=`<div class="scanbox">
+      <p>이 기사는 <b>스캔 이미지 PDF</b>라 본문 텍스트 추출이 되지 않았습니다.<br>아래 버튼으로 구글드라이브에서 원본 PDF를 여실 수 있습니다.</p>
+      <a class="pdfbtn" href="${pdf}" target="_blank">📄 원본 PDF 열기 (구글드라이브)</a>
+      <div class="warn">캡처 이미지(PNG)로 올려주시면 본문을 판독해 분석 카드로 추가할 수 있습니다.</div>
+    </div>`;
+  }
+  document.getElementById('modal').innerHTML=`
+    <div class="mhead">
+      <button class="close" onclick="closeM()">×</button>
+      <div class="badges">${d.nw?`<span class="b b-new">NEW ${d.ad||''}</span>`:''}${catBadge}<span class="imp">${d.imp||''}</span>${stars(d.st)}</div>
+      <h2>${d.t}</h2>
+      <div class="meta">${d.s}</div>
+    </div>
+    <div class="mbody">${body}</div>`;
+  document.getElementById('overlay').classList.add('on');
+  document.body.style.overflow='hidden';
+  document.getElementById('modal').parentElement.scrollTop=0;
+}
+function closeM(){document.getElementById('overlay').classList.remove('on');document.body.style.overflow=''}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeM()});
+renderTL();drawTabs();render();
+</script>
+</body>
+</html>
